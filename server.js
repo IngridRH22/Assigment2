@@ -1,7 +1,8 @@
 // Express
 const express = require("express");
 const app = express();
-app.use(express.static("public"));
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static("styles"));
 // Start the web server
 app.listen(5500, function() {
    console.log("Listening on port 5500...");
@@ -20,9 +21,14 @@ mongoose.connect("mongodb+srv://ingridrh2005_db_user:e8rDFKeaMsecu6Ou@a2.ko4lkxu
 
 
 app.get("/", function(req, res) {
-   res.render("login");
+   res.render("signin");
 });
 
 app.post("/login", function (req, res) {
+
+});
+
+app.post("/signin", function(req, res) {
+    console.log(req.body.username + " " + req.body.password);
 
 });
