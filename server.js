@@ -21,14 +21,14 @@ mongoose.connect("mongodb+srv://ingridrh2005_db_user:e8rDFKeaMsecu6Ou@a2.ko4lkxu
 
 
 app.get("/", function(req, res) {
-   res.render("signin");
+   res.render("signup");
 });
 
 app.post("/login", function (req, res) {
 
 });
 
-app.post("/signin", function(req, res) {
+app.post("/signup", function(req, res) {
     console.log(req.body.username + " " + req.body.password);
 
 });

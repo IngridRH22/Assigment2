@@ -1,0 +1,21 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    title Assignment 2
+    link(rel="stylesheet", href="style.css")
+  body
+    
+    section
+      h1 Sign up
+      form(action="/signup", method="POST")
+        input(type="email", name="email", id="email", required = true, placeholder="Enter your email")
+        br
+        input(type="text", name="username", id="username", required = true, placeholder="Choose a username")
+        br
+        input(type="password", name="password", id="password", required = true, placeholder="Create a password")
+        br
+        input(type="password", name="confirm_password", id="confirm_password", required = true, placeholder="Confirm your password")
+        br
+        button(type="submit") Sign up
+        button(type="button", onclick="window.location.href='/login'") Login
