@@ -17,5 +17,9 @@ html(lang="en")
         br
         input(type="password", name="confirm_password", id="confirm_password", required = true, placeholder="Confirm your password")
         br
+        if errores
+          ul(class="error-messages")
+            each error in errores
+              li= error
         button(type="submit") Sign up
         button(type="button", onclick="window.location.href='/login'") Login

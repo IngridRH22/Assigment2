@@ -64,3 +64,11 @@ button {
     font-weight: bold;
     cursor: pointer;
 }
+
+.error-messages {
+    list-style-type: none;
+    padding: 0;
+    margin: 0.5rem 0;
+    color: red;
+    font-size: 0.8rem;
+}
