@@ -1,8 +1,8 @@
 :root {
 	--blanco: #ffffff;
 	--oscuro: #212121;
-	--primario: #24babb;
-	--secundario: #ffd013;
+	--primario: #ED2B2A;
+	--secundario: #070A52;
 	--terciario: #DBDEE5;
     --header-font: "DM Sans", sans-serif;
 	--body-font: "Epilogue", sans-serif;
@@ -22,14 +22,17 @@ section {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: var(--oscuro);
+    color: var(--blanco);
+}
+
+.signup {
     width: 20rem;
     height: 30rem;
-    background-color: var(--oscuro);
     border-radius: 1rem;
     padding: 1rem;
-    margin: 0;
+    margin: 6% 38%;
     box-shadow: 0 0 10px #00000080;
-    color: var(--blanco);
 }
 
 form {

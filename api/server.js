@@ -1,22 +1,36 @@
 // Express
 const express = require("express");
 const app = express();
+const path = require("path");
+
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static("styles"));
+
+//Pa vecel
+app.use(express.static(path.join(__dirname, "../styles")));
+app.set("views", path.join(__dirname, "../views"));
+app.set("view engine", "pug");
+
 // Start the web server
 app.listen(5500, function() {
    console.log("Listening on port 5500...");
 });
 
-app.set("views", "views");
-app.set("view engine", "pug");
-
 
 // MongoDB
 const mongoose = require("mongoose");
-mongoose.connect("mongodb+srv://ingridrh2005_db_user:e8rDFKeaMsecu6Ou@a2.ko4lkxu.mongodb.net/?appName=A2")
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.log("Na " + err.message));
+let isConnected = false;
+async function connectDB() {
+  if (isConnected) return;
+  // Conexion a db
+  await mongoose.connect(process.env.MONGODB_URI)
+    .then(() => { isConnected = true; console.log("MongoDB Connected"); })
+    .catch((err) => console.log("Na " + err.message));
+}
+
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
 
 
 app.get("/", function(req, res) {
@@ -36,7 +50,7 @@ app.post("/signup", function(req, res) {
     }else {
         let prueba = createUser(req.body.email, req.body.username, req.body.password, req.body.confirm_password);
         console.log(prueba);
-        res.render("login");
+        res.render("primary");
     }
 });
 
