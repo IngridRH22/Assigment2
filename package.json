@@ -1,0 +1,24 @@
+{
+  "name": "a2",
+  "version": "1.0.0",
+  "description": "assigment 2 web",
+  "homepage": "https://github.com/IngridRH22/Assigment2#readme",
+  "bugs": {
+    "url": "https://github.com/IngridRH22/Assigment2/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IngridRH22/Assigment2.git"
+  },
+  "license": "MIT",
+  "author": "IngridRH",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "pug": "^3.0.4"
+  }
+}
