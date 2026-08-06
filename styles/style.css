@@ -1,7 +1,7 @@
 :root {
 	--blanco: #ffffff;
 	--oscuro: #212121;
-	--primario: #ED2B2A;
+	--primario: #F15A59;
 	--secundario: #070A52;
 	--terciario: #DBDEE5;
     --header-font: "DM Sans", sans-serif;
@@ -37,6 +37,7 @@ nav a {
 .account {
     align-self: left;
     background-color: var(--primario);
+    color: #000000;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
 }
@@ -86,7 +87,7 @@ button {
     border: none;
     border-radius: 0.5rem;
     background-color: var(--primario);
-    color: var(--blanco);
+    color: #000000;
     font-family: var(--body-font);
     font-weight: bold;
     cursor: pointer;
