@@ -71,7 +71,7 @@ app.post("/signup", function(req, res) {
 });
 
 app.get("/palogin", function(req, res) {
-    res.redirect("login");
+    res.render("login");
 });
 
 
