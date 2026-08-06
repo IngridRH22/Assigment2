@@ -44,7 +44,7 @@ app.get("/", function(req, res) {
 
 app.post("/login", function (req, res) {
     usuario = findUser(req.body.username);
-    if (usuario) {
+    if (usuario != null) {
         if (usuario.password === req.body.password) {
             res.render("primary");
         } else {
