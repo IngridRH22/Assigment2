@@ -1,11 +1,7 @@
-doctype html
-html(lang="en")
-  head
-    meta(charset="UTF-8")
-    title Assignment 2
-    link(rel="stylesheet", href="style.css")
-  body
-    
+extends layout.pug
+
+block principal
+
     section(class="signup")
       h1 Sign up
       form(action="/signup", method="POST")
