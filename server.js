@@ -42,11 +42,13 @@ app.get("/", function(req, res) {
    res.render("signup");
 });
 
-app.post("/login", function (req, res) {
-    usuario = findUser(req.body.username);
-    console.log("Usuario: " + usuario.username, "Password: " + usuario.password);
-    if (usuario != null) {
-        if (usuario.password === req.body.password) {
+app.post("/login", async function (req, res) {
+    console.log("Login attempt: " + req.body.username + " / " + req.body.password);
+    const userf = await User.findOne({ username: req.body.username });
+    console.log("Usuario encontrado: " + (userf ? userf.username : "No encontrado"));
+    console.log("Usuario: " + userf.username, "Password: " + userf.password);
+    if (userf != null) {
+        if (userf.password === req.body.password) {
             res.render("primary");
         } else {
             res.render("login", { error: "Incorrect password." });
@@ -54,7 +56,6 @@ app.post("/login", function (req, res) {
     } else {
         res.render("login", { error: "User not found." });
     }
-    res.render("login");
 });
 
 app.post("/signup", function(req, res) {
@@ -111,9 +112,5 @@ async function createUser(email, username, password, confirmPassword) {
     return nuevo;
 }
 
-async function findUser(username) {
-    const userf = await User.findOne({ username: username });
-    return userf;
-}
 
 module.exports = app
