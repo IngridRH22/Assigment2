@@ -65,7 +65,7 @@ app.post("/login", async function (req, res) {
     }
 });
 
-app.post("/signup", function(req, res) {
+app.post("/signup", async function(req, res) {
     let errores = checkPassword(req.body.password, req.body.confirm_password,req);
     if (errores.length > 0) {
         console.log(errores);
@@ -114,11 +114,6 @@ function checkPassword(password, confirmPassword,req) {
    }
 
    return errores;
-}
-
-async function createUser(email, username, password, confirmPassword) {
-    let nuevo = await User.create({ email: email, username: username, password: password });
-    return nuevo;
 }
 
 
