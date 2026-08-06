@@ -5,11 +5,10 @@ block principal
     section(class="login")
       h1 Login
       form(action="/login", method="POST")
-        label(for="username") Username:
-        input(type="text", name="username", id="username", required)
+        input(type="text", name="username", id="username", required = true, placeholder="Choose a username")
         br
-        label(for="password") Password:
-        input(type="password", name="password", id="password", required)
+        input(type="password", name="password", id="password", required = true, placeholder="Create a password")
+        br
         br
         if error
           p(class="error-messages")= error
