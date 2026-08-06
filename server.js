@@ -43,10 +43,7 @@ app.get("/", function(req, res) {
 });
 
 app.post("/login", async function (req, res) {
-    console.log("Login attempt: " + req.body.username + " / " + req.body.password);
     const userf = await User.findOne({ username: req.body.username });
-    console.log("Usuario encontrado: " + (userf ? userf.username : "No encontrado"));
-    console.log("Usuario: " + userf.username, "Password: " + userf.password);
     if (userf != null) {
         if (userf.password === req.body.password) {
             res.render("primary");
