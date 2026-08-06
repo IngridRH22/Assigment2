@@ -17,6 +17,14 @@ body {
 	font-weight: bold;
 }
 
+nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--oscuro);
+    padding: 1rem;
+}
+
 section {
     display: flex;
     flex-direction: column;
@@ -74,4 +82,14 @@ button {
     margin: 0.5rem 0;
     color: red;
     font-size: 0.8rem;
+}
+
+footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: var(--oscuro);
+    color: var(--blanco);
+    font-family: var(--body-font);
+    font-weight: bold;
+    width: 100%;
 }
