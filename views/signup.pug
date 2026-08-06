@@ -5,9 +5,9 @@ block principal
     section(class="signup")
       h1 Sign up
       form(action="/signup", method="POST")
-        input(type="email", name="email", id="email", required = true, placeholder="Enter your email")
+        input(type="email", name="email", id="email", required = true, placeholder="Enter your email", value=email)
         br
-        input(type="text", name="username", id="username", required = true, placeholder="Choose a username")
+        input(type="text", name="username", id="username", required = true, placeholder="Choose a username", value=username)
         br
         input(type="password", name="password", id="password", required = true, placeholder="Create a password")
         br

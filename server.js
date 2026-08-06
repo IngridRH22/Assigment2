@@ -25,6 +25,16 @@ async function connectDB() {
     .catch((err) => console.log("Na " + err.message));
 }
 
+//Entreteiment data
+const urldefault = "https://api.themoviedb.org/3";
+const tmdbOptions = {
+  method: 'GET',
+  headers: {
+    accept: 'application/json',
+    Authorization: 'Bearer ' + process.env.TMBD_ACCES_TOKEN
+  }
+};
+
 //Schemas
 const userSchema = new mongoose.Schema({
   email:  { type: String, required: true },
@@ -33,13 +43,13 @@ const userSchema = new mongoose.Schema({
 });
 
 const listSchema = new mongoose.Schema({
-  userid: { type: String, required: true },
+  userids: { userid: { type: String, required: true } },
   listName: { type: String, required: true },
-  items: [{ type: String }]
+  items: [{ movieid: { type: String, required: true } }]
 });
 
 const User = mongoose.model("User", userSchema);
-
+const List = mongoose.model("List", listSchema);
 app.use(async (req, res, next) => {
   await connectDB();
   next();
@@ -57,11 +67,10 @@ app.post("/login", async function (req, res) {
             userid = userf._id;
             res.render("primary", { userid: userid });
         } else {
-            userid = null;
-            res.render("login", { error: "Incorrect password." });
+            res.render("login", { error: "Incorrect password.", username: req.body.username });
         }
     } else {
-        res.render("login", { error: "User not found." });
+        res.render("login", { error: "User not found.", username: req.body.username });
     }
 });
 
@@ -69,7 +78,7 @@ app.post("/signup", async function(req, res) {
     let errores = checkPassword(req.body.password, req.body.confirm_password,req);
     if (errores.length > 0) {
         console.log(errores);
-        res.render("signup", { errores: errores });
+        res.render("signup", { errores: errores, email: req.body.email, username: req.body.username });
         return;
     }else {
         userid = null;
@@ -80,10 +89,34 @@ app.post("/signup", async function(req, res) {
     }
 });
 
-app.get("/palogin", function(req, res) {
+app.post("/palogin", function(req, res) {
     res.render("login");
 });
 
+//Search
+app.post("/searchmovies", async function(req, res) {
+    const searchQuery = req.body.searchQuery;
+    const url = urldefault + "/search/multi?query=" + req.body.searchQuery + "&include_adult=false&language=en-US&page=1";
+    fetch(url, tmdbOptions)
+        .then(res => res.json())
+        .then(json => console.log(json))
+        .catch(err => console.error(err));
+    res.render("newList", { userid: userid});
+});
+
+
+//Rutas
+app.get("/primary", function(req, res) {
+    res.render("primary", { userid: userid });
+});
+
+app.get("/signup", function(req, res) {
+    res.render("signup");
+});
+
+app.get("/login", function(req, res) {
+    res.render("login");
+});
 
 //Funciones
 
