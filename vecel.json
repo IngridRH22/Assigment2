@@ -2,5 +2,13 @@
   "version": 2,
   "rewrites": [
     { "source": "/(.*)", "destination": "/server.js" }
-  ]
+  ],
+  "functions": {
+    "api/server.js": {
+      "includeFiles": "views/**"
+    },
+    "server.js": {
+      "includeFiles": "views/**"
+    }
+  }
 }
