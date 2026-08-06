@@ -20,9 +20,25 @@ body {
 nav {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: left;
     background-color: var(--oscuro);
     padding: 1rem;
+}
+
+nav a {
+    color: var(--blanco);
+    text-decoration: none;
+    margin: 0 1rem;
+    font-family: var(--body-font);
+    font-weight: bold;
+    align-self: right;
+}
+
+.account {
+    align-self: left;
+    background-color: var(--primario);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
 }
 
 section {
@@ -92,4 +108,5 @@ footer {
     font-family: var(--body-font);
     font-weight: bold;
     width: 100%;
+    height: 3rem;
 }
