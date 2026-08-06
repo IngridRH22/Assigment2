@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 const path = require("path");
 
+let userid = null;
+
 app.use(express.urlencoded({ extended: false }));
 
 //Pa vecel
@@ -30,6 +32,12 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true }
 });
 
+const listSchema = new mongoose.Schema({
+  userid: { type: String, required: true },
+  listName: { type: String, required: true },
+  items: [{ type: String }]
+});
+
 const User = mongoose.model("User", userSchema);
 
 app.use(async (req, res, next) => {
@@ -46,8 +54,10 @@ app.post("/login", async function (req, res) {
     const userf = await User.findOne({ username: req.body.username });
     if (userf != null) {
         if (userf.password === req.body.password) {
-            res.render("primary");
+            userid = userf._id;
+            res.render("primary", { userid: userid });
         } else {
+            userid = null;
             res.render("login", { error: "Incorrect password." });
         }
     } else {
@@ -62,9 +72,11 @@ app.post("/signup", function(req, res) {
         res.render("signup", { errores: errores });
         return;
     }else {
-        let prueba = createUser(req.body.email, req.body.username, req.body.password, req.body.confirm_password);
-        console.log(prueba);
-        res.render("primary");
+        userid = null;
+        let nuevo = await User.create({ email: req.body.email, username: req.body.username, password: req.body.password });
+        console.log(nuevo);
+        userid = nuevo._id;
+        res.render("primary", { userid: userid });
     }
 });
 

@@ -126,6 +126,5 @@ footer {
     color: var(--blanco);
     font-family: var(--body-font);
     font-weight: bold;
-    width: 100%;
     height: 3rem;
 }
