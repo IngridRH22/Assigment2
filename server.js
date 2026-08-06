@@ -43,11 +43,16 @@ app.get("/", function(req, res) {
 });
 
 app.post("/login", function (req, res) {
-    async function findUser() {
-        const s6 = await User.findOne({ username: "Sujeto6" });
-        console.log("A s6 has:", s6.username, s6.email, s6.password);
+    usuario = findUser(req.body.username);
+    if (usuario) {
+        if (usuario.password === req.body.password) {
+            res.render("primary");
+        } else {
+            res.render("login", { error: "Incorrect password." });
+        }
+    } else {
+        res.render("login", { error: "User not found." });
     }
-    findUser();
 });
 
 app.post("/signup", function(req, res) {
@@ -102,6 +107,11 @@ function checkPassword(password, confirmPassword,req) {
 async function createUser(email, username, password, confirmPassword) {
     let nuevo = await User.create({ email: email, username: username, password: password });
     return nuevo;
+}
+
+async function findUser(username) {
+    const userf = await User.findOne({ username: username });
+    return userf;
 }
 
 module.exports = app
