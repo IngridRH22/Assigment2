@@ -34,7 +34,7 @@ app.get("/", function(req, res) {
 });
 
 app.post("/login", function (req, res) {
-
+    console.log(req.body.name);
 });
 
 app.post("/signup", function(req, res) {
