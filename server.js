@@ -23,6 +23,15 @@ async function connectDB() {
     .catch((err) => console.log("Na " + err.message));
 }
 
+//Schemas
+const userSchema = new mongoose.Schema({
+  email:  { type: String, required: true },
+  username: { type: String, required: true },
+  password: { type: String, required: true }
+});
+
+const User = mongoose.model("User", userSchema);
+
 app.use(async (req, res, next) => {
   await connectDB();
   next();
@@ -34,7 +43,8 @@ app.get("/", function(req, res) {
 });
 
 app.post("/login", function (req, res) {
-    console.log(req.body.name);
+    const s6 = await User.findOne({ username: "Sujeto6" });
+    console.log("A s6 has:", s6.username, s6.email, s6.password);
 });
 
 app.post("/signup", function(req, res) {
@@ -56,14 +66,6 @@ app.get("/palogin", function(req, res) {
 
 
 //Funciones
-
-const userSchema = new mongoose.Schema({
-  email:  { type: String, required: true },
-  username: { type: String, required: true },
-  password: { type: String, required: true }
-});
-
-const User = mongoose.model("User", userSchema);
 
 function checkPassword(password, confirmPassword,req) {
     let errores = [];
