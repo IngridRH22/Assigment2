@@ -14,12 +14,12 @@ app.set("view engine", "pug");
 
 // MongoDB
 const mongoose = require("mongoose");
-let isConnected = false;
+let conectado = false;
 async function connectDB() {
-  if (isConnected) return;
+  if (conectado) return;
   // Conexion a db
   await mongoose.connect(process.env.MONGODB_URI)
-    .then(() => { isConnected = true; console.log("MongoDB Connected"); })
+    .then(() => { conectado = true; console.log("MongoDB Connected"); })
     .catch((err) => console.log("Na " + err.message));
 }
 
