@@ -6,14 +6,10 @@ const path = require("path");
 app.use(express.urlencoded({ extended: false }));
 
 //Pa vecel
-app.use(express.static(path.join(__dirname, "../styles")));
-app.set("views", path.join(__dirname, "../views"));
+app.use(express.static(path.join(__dirname, "./styles")));
+app.set("views", path.join(__dirname, "./views"));
 app.set("view engine", "pug");
 
-// Start the web server
-app.listen(5500, function() {
-   console.log("Listening on port 5500...");
-});
 
 
 // MongoDB
@@ -98,3 +94,5 @@ async function createUser(email, username, password, confirmPassword) {
     let nuevo = await User.create({ email: email, username: username, password: password });
     return nuevo;
 }
+
+module.exports = app
