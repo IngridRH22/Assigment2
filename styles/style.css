@@ -38,6 +38,7 @@ nav section {
     justify-content: right;
     align-items: center;
     margin-left: auto;
+    flex-direction: row;
 }
 
 .account {

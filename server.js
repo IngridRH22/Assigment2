@@ -50,6 +50,10 @@ app.post("/signup", function(req, res) {
     }
 });
 
+app.get("/palogin", function(req, res) {
+    res.render("login");
+});
+
 
 //Funciones
 
