@@ -43,8 +43,11 @@ app.get("/", function(req, res) {
 });
 
 app.post("/login", function (req, res) {
-    const s6 = await User.findOne({ username: "Sujeto6" });
-    console.log("A s6 has:", s6.username, s6.email, s6.password);
+    async function findUser() {
+        const s6 = await User.findOne({ username: "Sujeto6" });
+        console.log("A s6 has:", s6.username, s6.email, s6.password);
+    }
+    findUser();
 });
 
 app.post("/signup", function(req, res) {
