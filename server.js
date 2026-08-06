@@ -44,6 +44,7 @@ app.get("/", function(req, res) {
 
 app.post("/login", function (req, res) {
     usuario = findUser(req.body.username);
+    console.log("Usuario: " + usuario.username, "Password: " + usuario.password);
     if (usuario != null) {
         if (usuario.password === req.body.password) {
             res.render("primary");
@@ -53,6 +54,7 @@ app.post("/login", function (req, res) {
     } else {
         res.render("login", { error: "User not found." });
     }
+    res.render("login");
 });
 
 app.post("/signup", function(req, res) {
@@ -69,7 +71,7 @@ app.post("/signup", function(req, res) {
 });
 
 app.get("/palogin", function(req, res) {
-    res.render("login");
+    res.redirect("login");
 });
 
 
