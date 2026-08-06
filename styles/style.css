@@ -58,7 +58,7 @@ section {
     color: var(--blanco);
 }
 
-.signup .login {
+.signup, .login {
     width: 20rem;
     height: 30rem;
     border-radius: 1rem;
