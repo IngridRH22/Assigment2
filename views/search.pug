@@ -2,7 +2,7 @@ extends layout.pug
 
 block principal
 
-    div(generalS)
+    div(class="generalS")
         section(class="search")
             h1 Search for movies
             form(action="/searchmovies", method="POST")
@@ -27,7 +27,7 @@ block principal
                             h2= item.name
                             p= item.known_for_department
                             img(src="https://image.tmdb.org/t/p/w500" + item.profile_path, alt=item.name)
-        section(filters)
+        section(class="filters")
             h2 Filters
             form(action="/searchmovies", method="POST")
                 button(type="submit", name="filter", value="movie") Movies
