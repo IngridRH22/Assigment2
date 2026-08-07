@@ -89,10 +89,6 @@ app.post("/signup", async function(req, res) {
     }
 });
 
-app.post("/palogin", function(req, res) {
-    res.render("login");
-});
-
 //Search
 app.post("/searchmovies", async function(req, res) {
     const searchQuery = req.body.searchQuery;
@@ -101,7 +97,7 @@ app.post("/searchmovies", async function(req, res) {
         const response = await fetch(url, tmdbOptions);
         const dataMovies = await response.json();
         const results = dataMovies.results;
-        res.render("newList", { userid: userid, results: results, searchQuery: searchQuery });
+        res.render("search", { userid: userid, results: results, searchQuery: searchQuery });
     } catch (error) {
         console.error(error);
         res.status(500).send("Error searching for movies.");
@@ -122,12 +118,12 @@ app.get("/login", function(req, res) {
     res.render("login");
 });
 
-app.get("/palogin", function(req, res) {
-    res.render("login");
-});
-
 app.get("/newList", function(req, res) {
     res.render("newList", { userid: userid });
+});
+
+app.post("/search", function(req, res) {
+    res.render("search", { userid: userid });
 });
 
 //Funciones

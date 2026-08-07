@@ -1,0 +1,34 @@
+extends layout.pug
+
+block principal
+
+    div(generalS)
+        section(class="search")
+            h1 Search for movies
+            form(action="/searchmovies", method="POST")
+                input(type="text", name="searchQuery", id="searchQuery", required = true, placeholder="Search a movie, series or person", value=searchQuery)
+                button(type="submit") Search
+            if results
+                each item in results
+                    if item.media_type === "movie"
+                        div(class="movie")
+                            h2= item.title
+                            p= item.overview
+                            img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
+                            button(type="button", onclick=`addMovieToList('${item.id}')`) Add to List
+                    else if item.media_type === "tv"
+                        div(class="tv")
+                            h2= item.name
+                            p= item.overview
+                            img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
+                            button(type="button", onclick=`addMovieToList('${item.id}')`) Add to List
+                    else if item.media_type === "person"
+                        div(class="person")
+                            h2= item.name
+                            p= item.known_for_department
+                            img(src="https://image.tmdb.org/t/p/w500" + item.profile_path, alt=item.name)
+        section(filters)
+            h2 Filters
+            form(action="/searchmovies", method="POST")
+                checkbox(id="movies", name="movies")
+      
