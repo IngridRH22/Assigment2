@@ -9,7 +9,7 @@ block principal
             br
             button(type="submit") Create List
         form(action="/searchmovies", method="POST")
-            input(type="text", name="searchQuery", id="searchQuery", required = true, placeholder="Search for movies to add to your list")
+            input(type="text", name="searchQuery", id="searchQuery", required = true, placeholder="Search for movies to add to your list", value=searchQuery)
             button(type="submit") Search
         if results
             each movie in results
