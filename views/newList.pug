@@ -11,10 +11,10 @@ block principal
         form(action="/searchmovies", method="POST")
             input(type="text", name="searchQuery", id="searchQuery", required = true, placeholder="Search for movies to add to your list")
             button(type="submit") Search
-
-        each movie in results
-            div(class="movie")
-                h2= movie.title
-                p= movie.overview
-                img(src="https://image.tmdb.org/t/p/w500" + movie.poster_path, alt=movie.title)
-                button(type="button", onclick=`addMovieToList('${movie.id}')`) Add to List
+        if results
+            each movie in results
+                div(class="movie")
+                    h2= movie.title
+                    p= movie.overview
+                    img(src="https://image.tmdb.org/t/p/w500" + movie.poster_path, alt=movie.title)
+                    button(type="button", onclick=`addMovieToList('${movie.id}')`) Add to List
