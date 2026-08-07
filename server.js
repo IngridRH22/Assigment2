@@ -106,7 +106,6 @@ app.post("/searchmovies", async function(req, res) {
         console.error(error);
         res.status(500).send("Error searching for movies.");
     }
-    res.render("newList", { userid: userid});
 });
 
 
