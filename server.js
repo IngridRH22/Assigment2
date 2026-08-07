@@ -97,10 +97,15 @@ app.post("/palogin", function(req, res) {
 app.post("/searchmovies", async function(req, res) {
     const searchQuery = req.body.searchQuery;
     const url = urldefault + "/search/multi?query=" + req.body.searchQuery + "&include_adult=false&language=en-US&page=1";
-    fetch(url, tmdbOptions)
-        .then(res => res.json())
-        .then(json => console.log(json))
-        .catch(err => console.error(err));
+    try {
+        const response = await fetch(url, tmdbOptions);
+        const dataMovies = await response.json();
+        const results = dataMovies.results;
+        console.log(results);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error searching for movies.");
+    }
     res.render("newList", { userid: userid});
 });
 
