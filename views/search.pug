@@ -12,21 +12,21 @@ block principal
                 each item in results
                     if item.media_type === "movie"
                         div(class="movie")
+                            img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
                             h2= item.title
                             p= item.overview
-                            img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
                             button(type="button", onclick=`addMovieToList('${item.id}')`) Add to List
                     else if item.media_type === "tv"
                         div(class="tv")
+                            img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
                             h2= item.name
                             p= item.overview
-                            img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
                             button(type="button", onclick=`addMovieToList('${item.id}')`) Add to List
                     else if item.media_type === "person"
                         div(class="person")
+                            img(src="https://image.tmdb.org/t/p/w500" + item.profile_path, alt=item.name)
                             h2= item.name
                             p= item.known_for_department
-                            img(src="https://image.tmdb.org/t/p/w500" + item.profile_path, alt=item.name)
         section(class="filters")
             h2 Filters
             form(action="/searchmovies", method="POST")
