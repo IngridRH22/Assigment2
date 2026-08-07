@@ -118,6 +118,14 @@ app.get("/login", function(req, res) {
     res.render("login");
 });
 
+app.get("/palogin", function(req, res) {
+    res.render("login");
+});
+
+app.get("/newList", function(req, res) {
+    res.render("newList", { userid: userid });
+});
+
 //Funciones
 
 function checkPassword(password, confirmPassword,req) {
