@@ -122,7 +122,7 @@ app.get("/newList", function(req, res) {
     res.render("newList", { userid: userid });
 });
 
-app.post("/search", function(req, res) {
+app.get("/search", function(req, res) {
     res.render("search", { userid: userid });
 });
 
