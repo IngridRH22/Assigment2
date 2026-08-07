@@ -101,7 +101,7 @@ app.post("/searchmovies", async function(req, res) {
         const response = await fetch(url, tmdbOptions);
         const dataMovies = await response.json();
         const results = dataMovies.results;
-        res.render("primary", { userid: userid, results: results, searchQuery: searchQuery });
+        res.render("newList", { userid: userid, results: results, searchQuery: searchQuery });
     } catch (error) {
         console.error(error);
         res.status(500).send("Error searching for movies.");
