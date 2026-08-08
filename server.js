@@ -118,7 +118,7 @@ app.post("/addMovieToList", async function(req, res) {
 
         if (!userList) {
             userList = await List.create({
-                userids: { userid: userid.toString() },
+                userids: { userid: userid},
                 listName: "Personal List",
                 items: [{ itemid: id, type: mediaType }]
             });
@@ -193,27 +193,5 @@ function checkPassword(password, confirmPassword,req) {
    return errores;
 }
 
-async function addMovieToList(id, mediaType) {
-    try {
-        const response = await fetch('/addMovieToList', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id: id, mediaType: mediaType })
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-            alert(data.message);
-        } else {
-            alert("Error: " + data.message);
-        }
-    } catch (error) {
-        console.error("Network error:", error);
-        alert("Could not connect to the server.");
-    }
-}
 
 module.exports = app
