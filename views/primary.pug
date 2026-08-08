@@ -12,6 +12,7 @@ block principal
       div(class="items")
         h2 Items
         if items
+          p Entro
           each item in items
             if item.type === "movie"
                 div(class="movie" onclick="window.location.href='/movie/' + item.id")
