@@ -236,7 +236,7 @@ button {
     grid-row: 1 / 3;
     align-self: start;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     margin: 0rem 1rem;
@@ -245,6 +245,14 @@ button {
     margin-top: 20%;
 }
 
+.filters form {
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
 
 footer {
     text-align: center;
