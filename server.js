@@ -70,9 +70,7 @@ app.post("/login", async function (req, res) {
             let userList = await List.findOne({ "userids.userid": userid.toString() });
             let items = [];
             if (userList) {
-                for (const item of userList.items) {
-                    items.push(idToItem(item.itemid, item.type));
-                }
+                items = await Promise.all(userList.items.map(item => idToItem(item.itemid, item.type)));
             }
             res.render("primary", { userid: userid, items: items });
         } else {
@@ -153,9 +151,7 @@ app.get("/primary", async function(req, res) {
     let userList = await List.findOne({ "userids.userid": userid.toString() });
     let items = [];
     if (userList) {
-        for (const item of userList.items) {
-            items.push(idToItem(item.itemid, item.type));
-        }
+        items = await Promise.all(userList.items.map(item => idToItem(item.itemid, item.type)));
     }
     res.render("primary", { userid: userid, items: items });
 });
@@ -210,8 +206,8 @@ function checkPassword(password, confirmPassword,req) {
 function idToItem(id, type) {
     try {
         const url = urldefault + "/" + type + "/" + id + "?language=en-US";
-        const response = fetch(url, tmdbOptions);
-        const data = response.json();
+        const response = await fetch(url, tmdbOptions);
+        const data = await response.json();
         return data;
     } catch (error) {
         console.error("Error fetching item by ID:", error);
