@@ -67,9 +67,10 @@ app.post("/login", async function (req, res) {
     if (userf != null) {
         if (userf.password === req.body.password) {
             userid = userf._id;
-            let userList = await List.findOne({ "userids.userid": userid.toString() });
+            let userList = await List.findOne({ "userids.userid": userid });
+            let items = [];
             if (userList) {
-                const items = await Promise.all(userList.items.map(item => idToItem(item.itemid, item.type)));
+                items = await Promise.all(userList.items.map(item => idToItem(item.itemid, item.type)));
                 console.log("User list items:", items);
             }
             res.render("primary", { userid: userid, items: items });
@@ -205,11 +206,10 @@ function checkPassword(password, confirmPassword,req) {
 
 async function idToItem(id, type) {
     try {
-        const url = urldefault + "/" + type + "/" + id + "?language=en-US";
+        const url = `${urldefault}/${type}/${id}?language=en-US`;
         const response = await fetch(url, tmdbOptions);
-        console.log("Fetching item by ID:", id, "Type:", type);
         const data = await response.json();
-        console.log("Fetched data:", data);
+        data.type = type; // <-- AÑADIR EL TIPO AQUÍ
         return data;
     } catch (error) {
         console.error("Error fetching item by ID:", error);
