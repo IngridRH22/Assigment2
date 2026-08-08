@@ -15,6 +15,7 @@ body {
 	background-color: var(--terciario);
 	font-family: var(--body-font);
 	font-weight: bold;
+    height: auto;
 }
 
 nav {
@@ -245,13 +246,9 @@ button {
     margin-top: 20%;
 }
 
-.filters form {
-    align-self: center;
+.filters label {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
 }
 
 footer {

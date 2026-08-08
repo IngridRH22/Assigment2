@@ -15,13 +15,13 @@ block principal
                             img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
                             h2= item.title
                             p= item.overview
-                            button(type="button", onclick=`addMovieToList('${item.id}')`) Add to List
+                            button(type="button", onclick=`event.stopPropagation(); addMovieToList('${item.id}', 'movie')`) Add to List
                     else if item.media_type === "tv"
                         div(class="tv" onclick="window.location.href='/tv/' + item.id")
                             img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
                             h2= item.name
                             p= item.overview
-                            button(type="button", onclick=`addMovieToList('${item.id}')`) Add to List
+                            button(type="button", onclick=`event.stopPropagation(); addMovieToList('${item.id}', 'tv')`) Add to List
                     else if item.media_type === "person"
                        // div(class="person" onclick="window.location.href='/person/' + item.id")
                             img(src="https://image.tmdb.org/t/p/w500" + item.profile_path, alt=item.name)

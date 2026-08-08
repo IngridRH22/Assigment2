@@ -6,6 +6,7 @@ const path = require("path");
 let userid = null;
 
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 //Pa vecel
 app.use(express.static(path.join(__dirname, "./styles")));
@@ -45,7 +46,8 @@ const userSchema = new mongoose.Schema({
 const listSchema = new mongoose.Schema({
   userids: { userid: { type: String, required: true } },
   listName: { type: String, required: true },
-  items: [{ movieid: { type: String, required: true } }]
+  items: [{ itemid: { type: String, required: true },
+            type: { type: String, required: true } }]
 });
 
 const User = mongoose.model("User", userSchema);
@@ -105,6 +107,39 @@ app.post("/searchmovies", async function(req, res) {
     }
 });
 
+app.post("/addMovieToList", async function(req, res) {
+    const { id, mediaType } = req.body;
+    if (!userid) {
+        return res.status(401).json({ success: false, message: "You must be logged in to add items." });
+    }
+
+    try {
+        let userList = await List.findOne({ "userids.userid": userid.toString() });
+
+        if (!userList) {
+            userList = await List.create({
+                userids: { userid: userid.toString() },
+                listName: "Personal List",
+                items: [{ itemid: id, type: mediaType }]
+            });
+            return res.status(201).json({ success: true, message: "List created and item added successfully!" });
+        }
+
+        const itemExists = userList.items.some(item => item.itemid === id);
+        if (itemExists) {
+            return res.status(400).json({ success: false, message: "This item is already in your list." });
+        }
+
+        userList.items.push({ itemid: id, type: mediaType });
+        await userList.save();
+
+        return res.status(200).json({ success: true, message: "Item added to your list!" });
+
+    } catch (error) {
+        console.error("Error adding to list:", error);
+        res.status(500).json({ success: false, message: "Internal server error." });
+    }
+});
 
 //Rutas
 app.get("/primary", function(req, res) {
@@ -158,5 +193,27 @@ function checkPassword(password, confirmPassword,req) {
    return errores;
 }
 
+async function addMovieToList(id, mediaType) {
+    try {
+        const response = await fetch('/addMovieToList', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: id, mediaType: mediaType })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            alert(data.message);
+        } else {
+            alert("Error: " + data.message);
+        }
+    } catch (error) {
+        console.error("Network error:", error);
+        alert("Could not connect to the server.");
+    }
+}
 
 module.exports = app
