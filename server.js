@@ -149,7 +149,7 @@ app.post("/addMovieToList", async function(req, res) {
 });
 
 //Rutas
-app.get("/primary", function(req, res) {
+app.get("/primary", async function(req, res) {
     let userList = await List.findOne({ "userids.userid": userid.toString() });
     let items = [];
     if (userList) {
