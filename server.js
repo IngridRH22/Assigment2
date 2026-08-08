@@ -67,7 +67,14 @@ app.post("/login", async function (req, res) {
     if (userf != null) {
         if (userf.password === req.body.password) {
             userid = userf._id;
-            res.render("primary", { userid: userid });
+            let userList = await List.findOne({ "userids.userid": userid.toString() });
+            let items = [];
+            if (userList) {
+                for (const item of userList.items) {
+                    items.push(idToItem(item.itemid, item.type));
+                }
+            }
+            res.render("primary", { userid: userid, items: items });
         } else {
             res.render("login", { error: "Incorrect password.", username: req.body.username });
         }
@@ -143,7 +150,14 @@ app.post("/addMovieToList", async function(req, res) {
 
 //Rutas
 app.get("/primary", function(req, res) {
-    res.render("primary", { userid: userid });
+    let userList = await List.findOne({ "userids.userid": userid.toString() });
+    let items = [];
+    if (userList) {
+        for (const item of userList.items) {
+            items.push(idToItem(item.itemid, item.type));
+        }
+    }
+    res.render("primary", { userid: userid, items: items });
 });
 
 app.get("/signup", function(req, res) {
@@ -193,5 +207,16 @@ function checkPassword(password, confirmPassword,req) {
    return errores;
 }
 
+function idToItem(id, type) {
+    try {
+        const url = urldefault + "/" + type + "/" + id + "?language=en-US";
+        const response = fetch(url, tmdbOptions);
+        const data = response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching item by ID:", error);
+        return null;
+    }
+}
 
 module.exports = app

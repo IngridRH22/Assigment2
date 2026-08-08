@@ -249,6 +249,11 @@ button {
 .filters label {
     display: flex;
     flex-direction: row;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+}
+.filters input[type="checkbox"] {
+    border-radius: 0.2rem;
 }
 
 footer {

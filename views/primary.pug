@@ -10,7 +10,22 @@ block principal
         label(for="list2") List 2
 
       div(class="items")
-        button(type="button", onclick="window.location.href='/search'") Create New List
+        h2 Items
+        if items.length === 0
+          p No items in your list.
+        else
+          each item in items
+            if item.type === "movie"
+                div(class="movie" onclick="window.location.href='/movie/' + item.id")
+                    img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
+                    h2= item.title
+                    p= item.overview
+            else if item.media_type === "tv"
+                div(class="tv" onclick="window.location.href='/tv/' + item.id")
+                    img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
+                    h2= item.name
+                    p= item.overview
+        button(type="button", onclick="window.location.href='/search'") Add Items
         
 
       div(class="filters")
