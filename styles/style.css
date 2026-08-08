@@ -252,8 +252,9 @@ button {
     font-size: 1rem;
     padding: 0.5rem 0;
 }
-.filters input[type="checkbox"] {
+.filters input {
     border-radius: 0.2rem;
+    height: 0.5rem;
 }
 
 footer {
