@@ -266,3 +266,104 @@ footer {
     align-self: flex-end;
     height: 3rem;
 }
+
+.hero {
+    padding: 5rem 1rem 4rem;
+    text-align: center;
+}
+
+.hero h1 {
+    font-family: var(--header-font);
+    font-size: 4rem;
+    color: var(--primario);
+    margin: 0;
+}
+
+.hero .tagline {
+    max-width: 40rem;
+    font-family: var(--body-font);
+    font-weight: normal;
+    font-size: 1.2rem;
+    color: var(--terciario);
+    margin: 1rem 0 2rem;
+}
+
+.hero-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.hero-actions button {
+    width: 10rem;
+}
+
+.hero-actions .secondary {
+    background-color: transparent;
+    color: var(--blanco);
+    border: 2px solid var(--primario);
+}
+
+.features {
+    padding: 3rem 1rem;
+    background-color: var(--secundario);
+}
+
+.features h2 {
+    font-family: var(--header-font);
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    width: 90%;
+}
+
+.feature-card {
+    background-color: var(--oscuro);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 0 10px #00000080;
+}
+
+.feature-card h3 {
+    color: var(--primario);
+    font-size: 1.2rem;
+    margin: 0 0 0.75rem;
+}
+
+.feature-card p {
+    font-family: var(--body-font);
+    font-weight: normal;
+    font-size: 0.9rem;
+    line-height: 1.4rem;
+}
+
+.cta {
+    padding: 3rem 1rem;
+    text-align: center;
+}
+
+.cta h2 {
+    font-family: var(--header-font);
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.cta button {
+    width: 16rem;
+}
+
+@media (max-width: 900px) {
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+}
