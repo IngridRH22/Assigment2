@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
 });
 
 const listSchema = new mongoose.Schema({
-  userids: { userid: { type: String, required: true } },
+  userids: { userid: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true  } },
   listName: { type: String, required: true },
   items: [{ itemid: { type: String, required: true },
             type: { type: String, required: true } }]
