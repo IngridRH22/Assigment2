@@ -134,7 +134,7 @@ button {
     color: var(--oscuro);
 }
 
-.search {
+.search, .items{
     grid-column: 2 / 3;
     margin: 0.2rem 1rem;
     padding: 0rem 0.5rem;
