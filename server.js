@@ -68,9 +68,8 @@ app.post("/login", async function (req, res) {
         if (userf.password === req.body.password) {
             userid = userf._id;
             let userList = await List.findOne({ "userids.userid": userid.toString() });
-            let items = [];
             if (userList) {
-                items = await Promise.all(userList.items.map(item => idToItem(item.itemid, item.type)));
+                const items = await Promise.all(userList.items.map(item => idToItem(item.itemid, item.type)));
                 console.log("User list items:", items);
             }
             res.render("primary", { userid: userid, items: items });
