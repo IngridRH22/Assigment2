@@ -1,7 +1,30 @@
-doctype html
-html(lang="en")
-  head
-    meta(charset="UTF-8")
-    title Assignment 2
-    link(rel="stylesheet", href="style.css")
-  body
+extends layout.pug
+
+block principal
+
+    section(class="hero")
+        h1 Reelist
+        p(class="tagline") Track every movie, TV show, and game you love — all in one place.
+        div(class="hero-actions")
+            button(type="button", onclick="window.location.href='/signup'") Get Started
+            button(type="button", class="secondary", onclick="window.location.href='/login'") Login
+
+    section(class="features")
+        h2 Why Reelist?
+        div(class="features-grid")
+            div(class="feature-card")
+                h3  Watchlists
+                p Build custom lists for everything you want to watch or play next, so nothing gets forgotten.
+            div(class="feature-card")
+                h3  Progress Tracking
+                p Keep track of what you've finished, what you're currently on, and what's still on deck.
+            div(class="feature-card")
+                h3  Collaborative Lists
+                p Share lists with friends and build watchlists together for movie nights or gaming sessions.
+            div(class="feature-card")
+                h3  Powered by TMDB
+                p Search and discover movies and TV shows with rich details, posters, and descriptions.
+
+    section(class="cta")
+        h2 Ready to start your list?
+        button(type="button", onclick="window.location.href='/signup'") Create your free account
