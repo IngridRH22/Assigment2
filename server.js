@@ -97,6 +97,7 @@ app.post("/searchmovies", async function(req, res) {
         const response = await fetch(url, tmdbOptions);
         const dataMovies = await response.json();
         const results = dataMovies.results;
+        console.log(results);
         res.render("search", { userid: userid, results: results, searchQuery: searchQuery });
     } catch (error) {
         console.error(error);

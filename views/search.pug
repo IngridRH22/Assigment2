@@ -11,25 +11,33 @@ block principal
             if results
                 each item in results
                     if item.media_type === "movie"
-                        div(class="movie")
+                        div(class="movie" onclick="window.location.href='/movie/' + item.id")
                             img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
                             h2= item.title
                             p= item.overview
                             button(type="button", onclick=`addMovieToList('${item.id}')`) Add to List
                     else if item.media_type === "tv"
-                        div(class="tv")
+                        div(class="tv" onclick="window.location.href='/tv/' + item.id")
                             img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
                             h2= item.name
                             p= item.overview
                             button(type="button", onclick=`addMovieToList('${item.id}')`) Add to List
                     else if item.media_type === "person"
-                        div(class="person")
+                        div(class="person" onclick="window.location.href='/person/' + item.id")
                             img(src="https://image.tmdb.org/t/p/w500" + item.profile_path, alt=item.name)
                             h2= item.name
                             p= item.known_for_department
         section(class="filters")
             h2 Filters
             form(action="/searchmovies", method="POST")
-                button(type="submit", name="filter", value="movie") Movies
-                button(type="submit", name="filter", value="tv") TV Shows
-                button(type="submit", name="filter", value="person") People
+                label(for="") Type:
+                input(type="checkbox", name="type", value="movie") Movie
+                input(type="checkbox", name="type", value="tv") TV Show
+                input(type="checkbox", name="type", value="person") Person
+                br
+                label(for="") Genre:
+                input(type="checkbox", name="genre", value="28") Action
+                input(type="checkbox", name="genre", value="12") Adventure
+                input(type="checkbox", name="genre", value="16") Cience Fiction
+                input(type="checkbox", name="genre", value="35") Comedy
+                input(type="checkbox", name="genre", value="80") Crime
