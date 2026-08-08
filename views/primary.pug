@@ -11,9 +11,7 @@ block principal
 
       div(class="items")
         h2 Items
-        if items.length === 0
-          p No items in your list.
-        else
+        if items
           each item in items
             if item.type === "movie"
                 div(class="movie" onclick="window.location.href='/movie/' + item.id")
@@ -25,6 +23,8 @@ block principal
                     img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
                     h2= item.name
                     p= item.overview
+        else 
+          p No items in your list.
         button(type="button", onclick="window.location.href='/search'") Add Items
         
 

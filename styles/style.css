@@ -15,7 +15,7 @@ body {
 	background-color: var(--terciario);
 	font-family: var(--body-font);
 	font-weight: bold;
-    height: auto;
+    height: 100vh;
 }
 
 nav {
