@@ -21,52 +21,52 @@ block principal
                 h2= item.name
                 p= item.overview
         button(type="button", onclick="window.location.href='/search'") Add Items
-    section(class="filters")
-        h2 Filters
-        form(action="/searchmovies", method="POST")
-            h3 Filter by Type
-            label
-                input(type="checkbox", name="movie", value="movie")
-                |  Movie
-            label
-                input(type="checkbox", name="tv", value="tv")
-                |  TV Show
+      section(class="filters")
+          h2 Filters
+          form(action="/searchmovies", method="POST")
+              h3 Filter by Type
+              label
+                  input(type="checkbox", name="movie", value="movie")
+                  |  Movie
+              label
+                  input(type="checkbox", name="tv", value="tv")
+                  |  TV Show
 
-            br
-            h3 Filter by Genre
-            label
-                input(type="checkbox", name="action", value="28")
-                |  Action
-            label
-                input(type="checkbox", name="Adventure", value="12")
-                |  Adventure
-            label
-                input(type="checkbox", name="ScienceFiction", value="16")
-                |  Science Fiction
-            label
-                input(type="checkbox", name="Comedy", value="35")
-                |  Comedy
-            label
-                input(type="checkbox", name="Crime", value="80")
-                |  Crime
-            label
-                input(type="checkbox", name="Fantasy", value="99")
-                |  Fantasy
-            label
-                input(type="checkbox", name="Drama", value="27")
-                |  Drama
-            label
-                input(type="checkbox", name="Family", value="53")
-                |  Family
-            label
-                input(type="checkbox", name="Thriller", value="10752")
-                |  Thriller
-            label
-                input(type="checkbox", name="Romance", value="10749")
-                |  Romance
-            label
-                input(type="checkbox", name="Mystery", value="9648")
-                |  Mystery
-            button(type="submit") Apply Filters
+              br
+              h3 Filter by Genre
+              label
+                  input(type="checkbox", name="action", value="28")
+                  |  Action
+              label
+                  input(type="checkbox", name="Adventure", value="12")
+                  |  Adventure
+              label
+                  input(type="checkbox", name="ScienceFiction", value="16")
+                  |  Science Fiction
+              label
+                  input(type="checkbox", name="Comedy", value="35")
+                  |  Comedy
+              label
+                  input(type="checkbox", name="Crime", value="80")
+                  |  Crime
+              label
+                  input(type="checkbox", name="Fantasy", value="99")
+                  |  Fantasy
+              label
+                  input(type="checkbox", name="Drama", value="27")
+                  |  Drama
+              label
+                  input(type="checkbox", name="Family", value="53")
+                  |  Family
+              label
+                  input(type="checkbox", name="Thriller", value="10752")
+                  |  Thriller
+              label
+                  input(type="checkbox", name="Romance", value="10749")
+                  |  Romance
+              label
+                  input(type="checkbox", name="Mystery", value="9648")
+                  |  Mystery
+              button(type="submit") Apply Filters
     
     
