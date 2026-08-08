@@ -30,12 +30,12 @@ block principal
         section(class="filters")
             h2 Filters
             form(action="/searchmovies", method="POST")
-                label(for="") Type:
+                label(for="Type") Type:
                 input(type="checkbox", name="type", value="movie") Movie
                 input(type="checkbox", name="type", value="tv") TV Show
                 input(type="checkbox", name="type", value="person") Person
                 br
-                label(for="") Genre:
+                label(for="genre") Genre:
                 input(type="checkbox", name="genre", value="28") Action
                 input(type="checkbox", name="genre", value="12") Adventure
                 input(type="checkbox", name="genre", value="16") Cience Fiction
