@@ -75,25 +75,25 @@ block principal
                     |  Mystery
                 button(type="submit") Apply Filters
     script.
-    async function addMovieToList(id, mediaType) {
-        try {
-            const response = await fetch('/addMovieToList', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id: id, mediaType: mediaType })
-            });
+        async function addMovieToList(id, mediaType) {
+            try {
+                const response = await fetch('/addMovieToList', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: id, mediaType: mediaType })
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (response.ok && data.success) {
-                alert(data.message);
-            } else {
-                alert("Error: " + data.message);
+                if (response.ok && data.success) {
+                    alert(data.message);
+                } else {
+                    alert("Error: " + data.message);
+                }
+            } catch (error) {
+                console.error("Network error:", error);
+                alert("Could not connect to the server.");
             }
-        } catch (error) {
-            console.error("Network error:", error);
-            alert("Could not connect to the server.");
         }
-    }
