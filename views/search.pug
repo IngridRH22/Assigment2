@@ -30,14 +30,23 @@ block principal
         section(class="filters")
             h2 Filters
             form(action="/searchmovies", method="POST")
-                label(for="Type") Type:
-                input(type="checkbox", name="type", value="movie") Movie
-                input(type="checkbox", name="type", value="tv") TV Show
-                input(type="checkbox", name="type", value="person") Person
+                h3 Filter by Type
+                input(type="checkbox", name="movie", value="movie")
+                label(for="movie") Movie
+                input(type="checkbox", name="tv", value="tv")
+                label(for="tv") TV Show
+                input(type="checkbox", name="person", value="person")
+                label(for="person") Person
                 br
-                label(for="genre") Genre:
-                input(type="checkbox", name="genre", value="28") Action
-                input(type="checkbox", name="genre", value="12") Adventure
-                input(type="checkbox", name="genre", value="16") Cience Fiction
-                input(type="checkbox", name="genre", value="35") Comedy
-                input(type="checkbox", name="genre", value="80") Crime
+                h3 Filter by Genre
+                input(type="checkbox", name="action", value="28")
+                label(for="action") Action
+                input(type="checkbox", name="genre", value="12")
+                label(for="genre") Adventure
+                input(type="checkbox", name="genre", value="16")
+                label(for="genre") Cience Fiction
+                input(type="checkbox", name="genre", value="35")
+                label(for="genre") Comedy
+                input(type="checkbox", name="genre", value="80")
+                label(for="genre") Crime
+                button(type="submit") Apply Filters
