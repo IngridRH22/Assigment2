@@ -23,10 +23,10 @@ block principal
                             p= item.overview
                             button(type="button", onclick=`addMovieToList('${item.id}')`) Add to List
                     else if item.media_type === "person"
-                        div(class="person" onclick="window.location.href='/person/' + item.id")
+                       // div(class="person" onclick="window.location.href='/person/' + item.id")
                             img(src="https://image.tmdb.org/t/p/w500" + item.profile_path, alt=item.name)
                             h2= item.name
-                            p= item.known_for_department
+                            p= item.known_for_department//
         section(class="filters")
             h2 Filters
             form(action="/searchmovies", method="POST")
@@ -35,8 +35,6 @@ block principal
                 label(for="movie") Movie
                 input(type="checkbox", name="tv", value="tv")
                 label(for="tv") TV Show
-                input(type="checkbox", name="person", value="person")
-                label(for="person") Person
                 br
                 h3 Filter by Genre
                 input(type="checkbox", name="action", value="28")
@@ -44,7 +42,7 @@ block principal
                 input(type="checkbox", name="genre", value="12")
                 label(for="genre") Adventure
                 input(type="checkbox", name="genre", value="16")
-                label(for="genre") Cience Fiction
+                label(for="genre") Science Fiction
                 input(type="checkbox", name="genre", value="35")
                 label(for="genre") Comedy
                 input(type="checkbox", name="genre", value="80")
