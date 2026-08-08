@@ -203,7 +203,7 @@ function checkPassword(password, confirmPassword,req) {
    return errores;
 }
 
-function idToItem(id, type) {
+async function idToItem(id, type) {
     try {
         const url = urldefault + "/" + type + "/" + id + "?language=en-US";
         const response = await fetch(url, tmdbOptions);
