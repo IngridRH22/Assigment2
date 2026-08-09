@@ -184,9 +184,9 @@ app.post("/remMoviefromList", async function(req, res) {
             return res.status(404).json({ success: false, message: "Item not found in your list." });
         }
 
-        const removedItem = await userList.items.deleteOne(itemIndex);
-        console.log("Removed item:", removedItem);
-        
+        userList.items.splice(itemIndex, 1);
+        await userList.save();
+
         return res.status(200).json({ success: true, message: "Item removed from your list!" });
 
     } catch (error) {
@@ -221,6 +221,16 @@ app.get("/search", function(req, res) {
     res.render("search", { userid: req.session.userid });
 });
 
+app.get("/account", async function(req, res) {
+    if (!req.session.userid) {
+        return res.redirect("/login");
+    }
+    const user = await User.findById(req.session.userid);
+    if (!user) {
+        return res.redirect("/login");
+    }
+    res.render("acount", {user});
+});
 //Funciones
 
 function checkPassword(password, confirmPassword,req) {

@@ -6,6 +6,9 @@ html(lang="en")
     link(rel="stylesheet", href="style.css")
   body
     nav
+    if userid
+      a(type="button", href="/acount") Acount
+    else
       a(type="button", href="/") Home
       section
       if userid

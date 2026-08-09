@@ -1,0 +1,10 @@
+extends layout.pug
+
+block principal
+
+    h1 Account
+    section(class="acount")
+        p Username: #{user.username}
+        p Email: #{user.email}
+        form(action="/logout", method="POST")
+            button(type="submit") Logout
