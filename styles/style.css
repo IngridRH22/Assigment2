@@ -246,6 +246,12 @@ button {
     margin-top: 20%;
 }
 
+.filters div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
 .filters label {
     display: flex;
     flex-direction: row;

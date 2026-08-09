@@ -137,7 +137,7 @@ app.post("/addMovieToList", async function(req, res) {
     }
 
     try {
-        let userList = await List.findOne({ "userids.userid": req.session.userid.toString() });
+        let userList = await List.findOne({ "userids.userid": req.session.userid});
 
         if (!userList) {
             userList = await List.create({
@@ -166,7 +166,7 @@ app.post("/addMovieToList", async function(req, res) {
 
 //Rutas
 app.get("/primary", async function(req, res) {
-    let userList = await List.findOne({ "userids.userid": req.session.userid.toString() });
+    let userList = await List.findOne({ "userids.userid": req.session.userid});
     let items = [];
     if (userList) {
         items = await Promise.all(userList.items.map(item => idToItem(item.itemid, item.type)));
