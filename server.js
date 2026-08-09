@@ -1,13 +1,25 @@
 // Express
 require("dotenv").config();
 const express = require("express");
+const session = require("express-session");
 const app = express();
 const path = require("path");
 
-let userid = null;
-
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+//Pa sesion
+const MongoStore = require("connect-mongo");
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true },
+  store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI,
+    })
+}));
+
 
 //Pa vecel
 app.use(express.static(path.join(__dirname, "./styles")));
@@ -67,14 +79,13 @@ app.post("/login", async function (req, res) {
     const userf = await User.findOne({ username: req.body.username });
     if (userf != null) {
         if (userf.password === req.body.password) {
-            userid = userf._id;
-            let userList = await List.findOne({ "userids.userid": userid });
+            req.session.userid = userf._id;
+            let userList = await List.findOne({ "userids.userid": req.session.userid });
             let items = [];
             if (userList) {
                 items = await Promise.all(userList.items.map(item => idToItem(item.itemid, item.type)));
-                console.log("User list items:", items);
             }
-            res.render("primary", { userid: userid, items: items });
+            res.render("primary", { userid: req.session.userid, items: items });
         } else {
             res.render("login", { error: "Incorrect password.", username: req.body.username });
         }
@@ -90,11 +101,10 @@ app.post("/signup", async function(req, res) {
         res.render("signup", { errores: errores, email: req.body.email, username: req.body.username });
         return;
     }else {
-        userid = null;
         let nuevo = await User.create({ email: req.body.email, username: req.body.username, password: req.body.password });
         console.log(nuevo);
-        userid = nuevo._id;
-        res.render("primary", { userid: userid });
+        req.session.userid = nuevo._id;
+        res.render("primary", { userid: req.session.userid });
     }
 });
 
@@ -107,7 +117,7 @@ app.post("/searchmovies", async function(req, res) {
         const dataMovies = await response.json();
         const results = dataMovies.results;
         console.log(results);
-        res.render("search", { userid: userid, results: results, searchQuery: searchQuery });
+        res.render("search", { userid: req.session.userid, results: results, searchQuery: searchQuery });
     } catch (error) {
         console.error(error);
         res.status(500).send("Error searching for movies.");
@@ -116,16 +126,16 @@ app.post("/searchmovies", async function(req, res) {
 
 app.post("/addMovieToList", async function(req, res) {
     const { id, mediaType } = req.body;
-    if (!userid) {
+    if (!req.session.userid) {
         return res.status(401).json({ success: false, message: "You must be logged in to add items." });
     }
 
     try {
-        let userList = await List.findOne({ "userids.userid": userid.toString() });
+        let userList = await List.findOne({ "userids.userid": req.session.userid.toString() });
 
         if (!userList) {
             userList = await List.create({
-                userids: { userid: userid},
+                userids: { userid: req.session.userid},
                 listName: "Personal List",
                 items: [{ itemid: id, type: mediaType }]
             });
@@ -150,12 +160,12 @@ app.post("/addMovieToList", async function(req, res) {
 
 //Rutas
 app.get("/primary", async function(req, res) {
-    let userList = await List.findOne({ "userids.userid": userid.toString() });
+    let userList = await List.findOne({ "userids.userid": req.session.userid.toString() });
     let items = [];
     if (userList) {
         items = await Promise.all(userList.items.map(item => idToItem(item.itemid, item.type)));
     }
-    res.render("primary", { userid: userid, items: items });
+    res.render("primary", { userid: req.session.userid, items: items });
 });
 
 app.get("/signup", function(req, res) {
@@ -167,11 +177,11 @@ app.get("/login", function(req, res) {
 });
 
 app.get("/newList", function(req, res) {
-    res.render("newList", { userid: userid });
+    res.render("newList", { userid: req.session.userid });
 });
 
 app.get("/search", function(req, res) {
-    res.render("search", { userid: userid });
+    res.render("search", { userid: req.session.userid });
 });
 
 //Funciones
