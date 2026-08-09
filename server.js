@@ -78,7 +78,7 @@ app.use(async (req, res, next) => {
 
 
 app.get("/", function(req, res) {
-   res.render("index",{ userid: userid});
+   res.render("index",{ userid: req.session.userid});
 });
 
 app.post("/login", async function (req, res) {
