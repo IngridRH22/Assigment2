@@ -47,7 +47,9 @@ nav section {
     background-color: var(--primario);
     color: #000000;
     padding: 0.5rem 1rem;
-    border-radius: 1rem;
+    border-radius: 1.5rem;
+    margin-left: 30%;
+    width: auto;
 }
 
 section {
