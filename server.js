@@ -55,6 +55,9 @@ const tmdbOptions = {
   }
 };
 
+//Hash
+const bcrypt = require("bcryptjs");
+
 //Schemas
 const userSchema = new mongoose.Schema({
   email:  { type: String, required: true },
@@ -84,7 +87,7 @@ app.get("/", function(req, res) {
 app.post("/login", async function (req, res) {
     const userf = await User.findOne({ username: req.body.username });
     if (userf != null) {
-        if (userf.password === req.body.password) {
+        if (await bcrypt.compare(req.body.password, userf.password)) {
             req.session.userid = userf._id;
             let userList = await List.findOne({ "userids.userid": req.session.userid });
             let items = [];
@@ -107,7 +110,8 @@ app.post("/signup", async function(req, res) {
         res.render("signup", { errores: errores, email: req.body.email, username: req.body.username });
         return;
     }else {
-        let nuevo = await User.create({ email: req.body.email, username: req.body.username, password: req.body.password });
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        let nuevo = await User.create({ email: req.body.email, username: req.body.username, password: hashedPassword });
         console.log(nuevo);
         req.session.userid = nuevo._id;
         res.render("primary", { userid: req.session.userid });

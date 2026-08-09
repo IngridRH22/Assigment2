@@ -4,6 +4,7 @@ html(lang="en")
     meta(charset="UTF-8")
     title Assignment 2
     link(rel="stylesheet", href="style.css")
+    link(rel="stylesheet" href="https://cloudflare.com")
   body
     nav
       if userid
@@ -13,7 +14,7 @@ html(lang="en")
         section
       if userid
         a(type="button", href="/account", class="account")
-          i.far.fa-user
+          i.fa-regular.fa-circle-user
       else
         a(type="button", href="/signup", class="account") Sign up
         a(type="button", href="/login", class="account") Login
