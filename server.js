@@ -13,11 +13,16 @@ const MongoStore = require("connect-mongo");
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: true,
-  cookie: { secure: true },
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24
+  },
   store: MongoStore.create({
-        mongoUrl: process.env.MONGODB_URI,
-    })
+    mongoUrl: process.env.MONGODB_URI,
+    ttl: 60 * 60 * 24
+  })
 }));
 
 
