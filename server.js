@@ -19,7 +19,7 @@ app.use(session({
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24
   },
-  store: new MongoStore({
+  store: MongoStore.create({
     mongoUrl: process.env.MONGODB_URI,
     ttl: 60 * 60 * 24
   })
