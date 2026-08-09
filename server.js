@@ -229,7 +229,7 @@ app.get("/account", async function(req, res) {
     if (!user) {
         return res.redirect("/login");
     }
-    res.render("acount", {user});
+    res.render("account", {user});
 });
 //Funciones
 

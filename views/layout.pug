@@ -6,13 +6,14 @@ html(lang="en")
     link(rel="stylesheet", href="style.css")
   body
     nav
-    if userid
-      a(type="button", href="/acount") Acount
-    else
-      a(type="button", href="/") Home
-      section
       if userid
-        a(type="button", href="/primary", class="account") Primary
+        a(type="button", href="/primary") Home
+      else
+        a(type="button", href="/") Home
+        section
+      if userid
+        a(type="button", href="/account", class="account")
+          i.far.fa-user
       else
         a(type="button", href="/signup", class="account") Sign up
         a(type="button", href="/login", class="account") Login
