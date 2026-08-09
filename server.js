@@ -130,6 +130,7 @@ app.post("/searchmovies", async function(req, res) {
     }
 });
 
+//add
 app.post("/addMovieToList", async function(req, res) {
     const { id, mediaType } = req.body;
     if (!req.session.userid) {
@@ -160,6 +161,36 @@ app.post("/addMovieToList", async function(req, res) {
 
     } catch (error) {
         console.error("Error adding to list:", error);
+        res.status(500).json({ success: false, message: "Internal server error." });
+    }
+});
+
+//remove
+app.post("/remMoviefromList", async function(req, res) {
+    const { id } = req.body;
+    if (!req.session.userid) {
+        return res.status(401).json({ success: false, message: "You must be logged in to remove items." });
+    }
+
+    try {
+        let userList = await List.findOne({ "userids.userid": req.session.userid});
+
+        if (!userList) {
+            return res.status(404).json({ success: false, message: "List not found." });
+        }
+
+        const itemIndex = userList.items.findIndex(item => item.itemid === id);
+        if (itemIndex === -1) {
+            return res.status(404).json({ success: false, message: "Item not found in your list." });
+        }
+
+        const removedItem = await userList.items.deleteOne(itemIndex);
+        console.log("Removed item:", removedItem);
+        
+        return res.status(200).json({ success: true, message: "Item removed from your list!" });
+
+    } catch (error) {
+        console.error("Error removing from list:", error);
         res.status(500).json({ success: false, message: "Internal server error." });
     }
 });
