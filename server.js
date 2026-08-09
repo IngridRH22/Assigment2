@@ -114,7 +114,8 @@ app.post("/signup", async function(req, res) {
         let nuevo = await User.create({ email: req.body.email, username: req.body.username, password: hashedPassword });
         console.log(nuevo);
         req.session.userid = nuevo._id;
-        res.render("primary", { userid: req.session.userid });
+        let items = [];
+        res.render("primary", { userid: req.session.userid, items: items });
     }
 });
 
