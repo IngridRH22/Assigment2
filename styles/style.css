@@ -42,14 +42,26 @@ nav section {
     flex-direction: row;
 }
 
-.account {
+.SandL {
     align-self: left;
     background-color: var(--primario);
     color: #000000;
     padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.account {
+    align-self: left;
+    background-color: var(--primario);
+    color: #000000;
     border-radius: 1.5rem;
     margin-left: 30%;
-    width: auto;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+svg {
+    margin: 0.5rem;
 }
 
 section {
