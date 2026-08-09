@@ -9,7 +9,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 //Pa sesion
-const MongoStore = require("connect-mongo");
+const MongoStore = require("connect-mongo").default;
+
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -19,7 +20,7 @@ app.use(session({
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24
   },
- store: new MongoStore({
+  store: MongoStore.create({
     mongoUrl: process.env.MONGODB_URI,
     ttl: 60 * 60 * 24
   })
