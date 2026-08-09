@@ -25,11 +25,12 @@ block principal
           h2 Filters
           form(action="/searchmovies", method="POST")
               h3 Filter by Type
-              label
-                  input(type="checkbox", name="movie", value="movie")
-                  |  Movie
-              label
-                  input(type="checkbox", name="tv", value="tv")
+              div
+                label
+                    input(type="checkbox", name="movie", value="movie")
+                    |  Movie
+                label
+                    input(type="checkbox", name="tv", value="tv")
                   |  TV Show
 
               br

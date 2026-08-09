@@ -257,6 +257,7 @@ button {
     flex-direction: row;
     font-size: 1rem;
     padding: 0.5rem 0;
+    text-align: left;
 }
 .filters input {
     border-radius: 0.2rem;
