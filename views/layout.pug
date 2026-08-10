@@ -4,15 +4,14 @@ html(lang="en")
     meta(charset="UTF-8")
     title Assignment 2
     link(rel="stylesheet", href="style.css")
-    link(rel="stylesheet" href="https://cloudflare.com")
   body
     nav
       if userid
-        a(type="button", href="/primary")
+        a(type="button", href="/primary" class="home")
           svg.icon.icon-tabler.icons-tabler-outline.icon-tabler-home(
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="34"
+            height="34"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -43,7 +42,6 @@ html(lang="en")
             path(d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7")
             path(d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6")
 
-        section
       if userid
         a(type="button", href="/account", class="account")
           svg.icon.icon-tabler.icons-tabler-outline.icon-tabler-user(

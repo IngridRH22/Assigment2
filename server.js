@@ -234,7 +234,7 @@ app.get("/account", async function(req, res) {
     if (!user) {
         return res.redirect("/login");
     }
-    res.render("account", {user});
+    res.render("account", {user, userid: req.session.userid});
 });
 //Funciones
 

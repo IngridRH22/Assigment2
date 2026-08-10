@@ -42,6 +42,16 @@ nav section {
     flex-direction: row;
 }
 
+.home {
+    height: 0.5rem;
+    margin-left: 0rem;
+}
+
+.home svg {
+    margin: 0rem;
+    padding: 0rem;
+}
+
 .SandL {
     align-self: left;
     background-color: var(--primario);
@@ -276,6 +286,25 @@ button {
 .filters input {
     border-radius: 0.2rem;
     height: 1rem;
+}
+
+/* Account Info */
+
+.acountInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0rem 10rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.acountInfo form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    width: 100%;
 }
 
 footer {
