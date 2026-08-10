@@ -148,7 +148,6 @@ app.post("/updateAccount", async function(req, res) {
 });
 
 app.post("/deleteAccount", async function(req, res) {
-    console.log("Delete account request received");
     if (!req.session.userid) {
         return res.redirect("/login");
     }
@@ -159,7 +158,8 @@ app.post("/deleteAccount", async function(req, res) {
             return res.status(404).send("User not found.");
         }
 
-        await user.remove();
+        const userList = await List.deleteMany({ "userids.userid": req.session.userid });
+        const userDeletion = await User.deleteOne({ _id: req.session.userid });
         req.session.destroy();
         res.redirect("/signup");
     } catch (error) {
