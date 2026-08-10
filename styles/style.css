@@ -448,6 +448,7 @@ footer {
 }
 
 @media (max-width: 900px) {
+    /*Index*/
     .features-grid {
         grid-template-columns: 1fr;
     }
@@ -455,4 +456,25 @@ footer {
     .hero h1 {
         font-size: 2.5rem;
     }
+
+    /*Login and Signup*/
+    .signup, .login {
+        margin: 10% 20%;
+    }
+
+    /*Search*/
+    .movie, .tv {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: auto;
+    }
+
+    .movie img, .tv img {
+        width: 80%;
+        height: auto;
+        align-self: center;
+        margin: 0.5rem 0;
+    }
+
 }
