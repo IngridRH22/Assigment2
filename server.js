@@ -103,6 +103,11 @@ app.post("/login", async function (req, res) {
     }
 });
 
+app.post("/logout", function(req, res) {
+    req.session.destroy();
+    res.redirect("/");
+});
+
 app.post("/signup", async function(req, res) {
     let errores = checkPassword(req.body.password, req.body.confirm_password,req);
     if (errores.length > 0) {

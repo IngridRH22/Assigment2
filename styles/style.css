@@ -144,6 +144,26 @@ button {
     gap: 0rem;
 }
 
+/* Primary */
+.primary h2 {
+    grid-column: 2 / 3;
+}
+
+.items p {
+    margin-left: 3rem;
+}
+
+.items button {
+    grid-column: 2 / 3;
+    margin: 0.2rem 1rem;
+    padding: 0.2rem 0.5rem;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
 /* Search */
 .generalS {
     display: grid;
@@ -279,6 +299,7 @@ button {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
+    margin-left: 1rem;
 }
 
 .filters label {
@@ -287,10 +308,13 @@ button {
     font-size: 1rem;
     padding: 0.5rem 0;
     text-align: left;
+    align-items: center;
+    margin: 0;
 }
 .filters input {
     border-radius: 0.2rem;
     height: 1rem;
+    width: 1.2rem;
 }
 
 /* Account Info */
@@ -309,7 +333,13 @@ button {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
-    width: 100%;
+    width: 90%;
+}
+
+.acountInfo form button {
+    grid-column: 2/3;
+    width: 10rem;
+    margin-left: 61%;
 }
 
 footer {

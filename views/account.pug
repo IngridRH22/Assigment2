@@ -11,6 +11,15 @@ block principal
             input(type="email", name="email", id="email", required = false, placeholder="Update your email")
             button(type="submit") Update Account
 
+        form(action="/updatePassword", method="POST")
+            p Update Password:
+            input(type="password", name="current_password", id="current_password", required = true, placeholder="Current password")
+            input(type="password", name="new_password", id="new_password", required = true, placeholder="New password")
+            input(type="password", name="confirm_new_password", id="confirm_new_password", required = true, placeholder="Confirm new password")
+            button(type="submit") Update Password
+        if errores
+            each error in errores
+                p(class="error-messages")= error
         button(type="submit" onclick="logout();") Logout
         button(type="submit" onclick="deleteAccount();") Delete Account
     script.
