@@ -119,7 +119,7 @@ app.post("/signup", async function(req, res) {
     }
 });
 
-//Update User
+//Acount
 app.post("/updateAccount", async function(req, res) {
     if (!req.session.userid) {
         return res.redirect("/login");
@@ -143,6 +143,26 @@ app.post("/updateAccount", async function(req, res) {
         res.redirect("/account", { user: user, userid: req.session.userid });
     } catch (error) {
         console.error("Error updating account:", error);
+        res.status(500).send("Internal server error.");
+    }
+});
+
+app.post("/deleteAccount", async function(req, res) {
+    if (!req.session.userid) {
+        return res.redirect("/login");
+    }
+
+    try {
+        const user = await User.findById(req.session.userid);
+        if (!user) {
+            return res.status(404).send("User not found.");
+        }
+
+        await user.remove();
+        req.session.destroy();
+        res.redirect("/signup");
+    } catch (error) {
+        console.error("Error deleting account:", error);
         res.status(500).send("Internal server error.");
     }
 });
@@ -262,7 +282,7 @@ app.get("/account", async function(req, res) {
     if (!user) {
         return res.redirect("/login");
     }
-    res.render("/account", { user: user, userid: req.session.userid });
+    res.render("account", { user: user, userid: req.session.userid });
 });
 //Funciones
 
