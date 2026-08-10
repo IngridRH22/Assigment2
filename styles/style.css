@@ -459,15 +459,20 @@ footer {
 
     /*Login and Signup*/
     .signup, .login {
-        margin: 10% 20%;
+        margin: 10%;
     }
 
     /*Search*/
+    .generalS {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+    }
     .movie, .tv {
         display: flex;
         flex-direction: column;
         align-items: center;
         height: auto;
+        grid-row: 2 / 3;
     }
 
     .movie img, .tv img {
@@ -475,6 +480,17 @@ footer {
         height: auto;
         align-self: center;
         margin: 0.5rem 0;
+    }
+
+    .filters {
+        grid-column: 1 / 2;
+        grid-row: 1 / 2;
+        margin-top: 1rem;
+    }
+
+    .items {
+        grid-column: 1 / 2;
+        grid-row: 2 / 3;
     }
 
 }
