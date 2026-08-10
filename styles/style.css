@@ -233,6 +233,7 @@ button {
     grid-template-rows: 15% 65% auto;
     width: 90%;
     height: 15rem;
+    align-self: center;
 }
 
 .movie img, .tv img {
@@ -249,9 +250,10 @@ button {
     grid-column: 2 / 3;
     grid-row: 1 / 2;
     color: var(--primario);
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     margin-left: 1rem;
     margin-top: 0rem;
+    text-align: left;
 }
 
 .movie p, .tv p {
@@ -279,6 +281,7 @@ button {
     font-weight: bold;
     align-self: flex-end;
     cursor: pointer;
+    font-size: 1rem;
 }
 
 .filters {
