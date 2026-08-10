@@ -119,6 +119,33 @@ app.post("/signup", async function(req, res) {
     }
 });
 
+//Update User
+app.post("/updateAccount", async function(req, res) {
+    if (!req.session.userid) {
+        return res.redirect("/login");
+    }
+
+    try {
+        const user = await User.findById(req.session.userid);
+        if (!user) {
+            return res.status(404).send("User not found.");
+        }
+
+        if (req.body.username) {
+            user.username = req.body.username;
+        }
+        if (req.body.email) {
+            user.email = req.body.email;
+        }
+
+        await user.save();
+        res.redirect("/account");
+    } catch (error) {
+        console.error("Error updating account:", error);
+        res.status(500).send("Internal server error.");
+    }
+});
+
 //Search
 app.post("/searchmovies", async function(req, res) {
     const searchQuery = req.body.searchQuery;

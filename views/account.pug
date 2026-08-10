@@ -6,9 +6,9 @@ block principal
     section(class="acountInfo")
         form(action="/updateAccount", method="POST")
             p Username: #{user.username}
-            input(type="text", name="username", id="username", required = true, placeholder="Update your username")
+            input(type="text", name="username", id="username", required = false, placeholder="Update your username")
             p Email: #{user.email}
-            input(type="email", name="email", id="email", required = true, placeholder="Update your email")
+            input(type="email", name="email", id="email", required = false, placeholder="Update your email")
             button(type="submit") Update Account
 
         
