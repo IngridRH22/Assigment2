@@ -148,6 +148,7 @@ app.post("/updateAccount", async function(req, res) {
 });
 
 app.post("/deleteAccount", async function(req, res) {
+    console.log("Delete account request received");
     if (!req.session.userid) {
         return res.redirect("/login");
     }
