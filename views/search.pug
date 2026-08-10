@@ -28,51 +28,53 @@ block principal
                             h2= item.name
                             p= item.known_for_department//
         section(class="filters")
-            h2 Filters
-            form(action="/searchmovies", method="POST")
-                h3 Filter by Type
+          h2 Filters
+          form(action="/searchmovies", method="POST")
+              h3 Filter by Type
+              div
                 label
-                    input(type="checkbox", name="movie", value="movie")
-                    |  Movie
+                  input(type="checkbox", name="movie", value="movie")
+                  |  Movie
                 label
-                    input(type="checkbox", name="tv", value="tv")
-                    |  TV Show
-                br
-                h3 Filter by Genre
+                  input(type="checkbox", name="tv", value="tv")
+                  |  TV Show
+              br
+              h3 Filter by Genre
+              div
                 label
-                    input(type="checkbox", name="action", value="28")
-                    |  Action
+                  input(type="checkbox", name="action", value="28")
+                  |  Action
                 label
-                    input(type="checkbox", name="Adventure", value="12")
-                    |  Adventure
+                  input(type="checkbox", name="Adventure", value="12")
+                  |  Adventure
                 label
-                    input(type="checkbox", name="ScienceFiction", value="16")
-                    |  Science Fiction
+                  input(type="checkbox", name="Comedy", value="35")
+                  |  Comedy
                 label
-                    input(type="checkbox", name="Comedy", value="35")
-                    |  Comedy
+                  input(type="checkbox", name="Crime", value="80")
+                  |  Crime
                 label
-                    input(type="checkbox", name="Crime", value="80")
-                    |  Crime
+                  input(type="checkbox", name="Fantasy", value="99")
+                  |  Fantasy
                 label
-                    input(type="checkbox", name="Fantasy", value="99")
-                    |  Fantasy
+                  input(type="checkbox", name="Drama", value="27")
+                  |  Drama
                 label
-                    input(type="checkbox", name="Drama", value="27")
-                    |  Drama
+                  input(type="checkbox", name="Family", value="53")
+                  |  Family
                 label
-                    input(type="checkbox", name="Family", value="53")
-                    |  Family
+                  input(type="checkbox", name="Thriller", value="10752")
+                  |  Thriller
                 label
-                    input(type="checkbox", name="Thriller", value="10752")
-                    |  Thriller
+                  input(type="checkbox", name="Romance", value="10749")
+                  |  Romance
                 label
-                    input(type="checkbox", name="Romance", value="10749")
-                    |  Romance
+                  input(type="checkbox", name="Mystery", value="9648")
+                  |  Mystery
                 label
-                    input(type="checkbox", name="Mystery", value="9648")
-                    |  Mystery
-                button(type="submit") Apply Filters
+                  input(type="checkbox", name="ScienceFiction", value="16")
+                  |  Science Fiction
+              button(type="submit") Apply Filters
     script.
         async function addMovieToList(id, mediaType) {
             try {

@@ -20,7 +20,7 @@ body {
 
 nav {
     display: flex;
-    justify-content: left;
+    justify-content: space-between;
     background-color: var(--oscuro);
     padding: 1rem;
 }
@@ -156,6 +156,11 @@ button {
     padding: 1rem;
     background-color: var(--terciario);
     color: var(--oscuro);
+}
+
+.generalS h2 {
+    grid-column: 2 / 3;
+    text-align: center;
 }
 
 .search, .items{

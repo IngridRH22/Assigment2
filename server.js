@@ -139,7 +139,8 @@ app.post("/updateAccount", async function(req, res) {
         }
 
         await user.save();
-        res.redirect("/account");
+        alert("Account updated successfully");
+        res.redirect("/account", { user: user, userid: req.session.userid });
     } catch (error) {
         console.error("Error updating account:", error);
         res.status(500).send("Internal server error.");
@@ -261,7 +262,7 @@ app.get("/account", async function(req, res) {
     if (!user) {
         return res.redirect("/login");
     }
-    res.render("account", {user, userid: req.session.userid});
+    res.render("/account", { user: user, userid: req.session.userid });
 });
 //Funciones
 
