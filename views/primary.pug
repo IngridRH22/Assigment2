@@ -24,51 +24,51 @@ block principal
         button(type="button", onclick="window.location.href='/search'") Add Items
       section(class="filters")
           h2 Filters
-          form(action="/searchmovies", method="POST")
+          form(action="/primary", method="POST")
               input(type="hidden", name="searchQuery", value=searchQuery)
               h3 Filter by Type
               div
                 label
-                  input(type="checkbox", name="mediaType", value="movie")
+                  input(type="checkbox", name="mediaType", value="movie", checked=mediaType && mediaType.includes("movie"))
                   |  Movie
                 label
-                  input(type="checkbox", name="mediaType", value="tv")
+                  input(type="checkbox", name="mediaType", value="tv", checked=mediaType && mediaType.includes("tv"))
                   |  TV Show
               br
               h3 Filter by Genre
               div
                 label
-                  input(type="checkbox", name="genres", value="28")
+                  input(type="checkbox", name="genres", value="28", checked=genres && genres.includes("28"))
                   |  Action
                 label
-                  input(type="checkbox", name="genres", value="12")
+                  input(type="checkbox", name="genres", value="12", checked=genres && genres.includes("12"))
                   |  Adventure
                 label
-                  input(type="checkbox", name="genres", value="35")
+                  input(type="checkbox", name="genres", value="35", checked=genres && genres.includes("35"))
                   |  Comedy
                 label
-                  input(type="checkbox", name="genres", value="80")
+                  input(type="checkbox", name="genres", value="80", checked=genres && genres.includes("80"))
                   |  Crime
                 label
-                  input(type="checkbox", name="genres", value="14")
+                  input(type="checkbox", name="genres", value="14", checked=genres && genres.includes("14"))
                   |  Fantasy
                 label
-                  input(type="checkbox", name="genres", value="18")
+                  input(type="checkbox", name="genres", value="18", checked=genres && genres.includes("18"))
                   |  Drama
                 label
-                  input(type="checkbox", name="genres", value="10751")
+                  input(type="checkbox", name="genres", value="10751", checked=genres && genres.includes("10751"))
                   |  Family
                 label
-                  input(type="checkbox", name="genres", value="53")
+                  input(type="checkbox", name="genres", value="53", checked=genres && genres.includes("53"))
                   |  Thriller
                 label
-                  input(type="checkbox", name="genres", value="10749")
+                  input(type="checkbox", name="genres", value="10749", checked=genres && genres.includes("10749"))
                   |  Romance
                 label
-                  input(type="checkbox", name="genres", value="9648")
+                  input(type="checkbox", name="genres", value="9648", checked=genres && genres.includes("9648"))
                   |  Mystery
                 label
-                  input(type="checkbox", name="genres", value="878")
+                  input(type="checkbox", name="genres", value="878", checked=genres && genres.includes("878"))
                   |  Science Fiction
               button(type="submit") Apply Filters
     script.
@@ -95,4 +95,5 @@ block principal
             }
         }
     
+      
     
