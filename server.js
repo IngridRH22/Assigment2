@@ -190,8 +190,9 @@ app.post("/updatePassword", async function(req, res) {
             return res.status(400).send("Current password is incorrect.");
         }
 
-        user.password = newPassword;
-        await user.save();
+
+        userf.password = newPassword;
+        await userf.save();
         res.redirect("/account");
     } catch (error) {
         console.error("Error updating password:", error);
