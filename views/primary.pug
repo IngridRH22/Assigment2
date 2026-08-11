@@ -9,21 +9,19 @@ block principal
           p No items in your list.
         else
           each item in items
-            - const matchesGenre = gArray.length === 0 || gArray.some(g => item.genre_ids.includes(parseInt(g)))
             if item.type === "movie" && (mediaType === "movie" || mediaType === undefined)
-              if matchesGenre
+              if genres === undefined || genres.some(g => item.genre_ids.includes(parseInt(g))))
                 div(class="movie" onclick="window.location.href='/movie/' + item.id")
                   img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
                   h2= item.title
                   p= item.overview
                   button(type="button", onclick=`event.stopPropagation(); removeMoviefromList('${item.id}')`) Remove from List
             else if item.type === "tv"
-              if matchesGenre
-                div(class="tv" onclick="window.location.href='/tv/' + item.id")
-                  img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
-                  h2= item.name
-                  p= item.overview
-                  button(type="button", onclick=`event.stopPropagation(); removeMoviefromList('${item.id}')`) Remove from List
+              div(class="tv" onclick="window.location.href='/tv/' + item.id")
+                img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
+                h2= item.name
+                p= item.overview
+                button(type="button", onclick=`event.stopPropagation(); removeMoviefromList('${item.id}')`) Remove from List
         button(type="button", onclick="window.location.href='/search'") Add Items
       section(class="filters")
           h2 Filters
