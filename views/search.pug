@@ -10,16 +10,15 @@ block principal
                 button(type="submit") Search
             if results
                 each item in results
-                    - const matchesGenre = !genres || genres.some(g => item.genre_ids.includes(parseInt(g)))
-                    if item.type === "movie" && (mediaType === "movie" || mediaType === undefined)
-                        if matchesGenre
+                    if item.media_type === "movie" && (mediaType === "movie" || mediaType === undefined)
+                        if item.genre_ids.includes(parseInt(genres)) || genres === undefined
                             div(class="movie" onclick="window.location.href='/movie/' + item.id")
                                 img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
                                 h2= item.title
                                 p= item.overview
                                 button(type="button", onclick=`event.stopPropagation(); addMovieToList('${item.id}', 'movie')`) Add to List
                     else if item.media_type === "tv" && (mediaType === "tv" || mediaType === undefined)
-                        if matchesGenre
+                        if item.genre_ids.includes(parseInt(genres)) || genres === undefined
                             div(class="tv" onclick="window.location.href='/tv/' + item.id")
                                 img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
                                 h2= item.name
@@ -82,7 +81,6 @@ block principal
     script.
         async function addMovieToList(id, mediaType) {
             try {
-                console.log("Adding item with ID:", id, "and mediaType:", mediaType);
                 const response = await fetch('/addMovieToList', {
                     method: 'POST',
                     headers: {
