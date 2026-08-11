@@ -9,7 +9,6 @@ block principal
           p No items in your list.
         else
           each item in items
-            - const gArray = Array.isArray(genres) ? genres : (genres ? [genres] : [])
             - const matchesGenre = gArray.length === 0 || gArray.some(g => item.genre_ids.includes(parseInt(g)))
             if item.type === "movie" && (mediaType === "movie" || mediaType === undefined)
               if matchesGenre
