@@ -9,68 +9,66 @@ block principal
           p No items in your list.
         else
           each item in items
-            console.log(item)
-            if item.media_type === "movie"
-                console.log(item.genre_ids)
-                div(class="movie" onclick="window.location.href='/movie/' + item.id")
-                  img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
-                  h2= item.title
-                  p= item.overview
-                  button(type="button", onclick=`event.stopPropagation(); removeMoviefromList('${item.id}')`) Remove from List
-            else if item.media_type === "tv" 
-                div(class="tv" onclick="window.location.href='/tv/' + item.id")
-                  img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
-                  h2= item.name
-                  p= item.overview
-                  button(type="button", onclick=`event.stopPropagation(); removeMoviefromList('${item.id}')`) Remove from List
+            if item.type === "movie"
+              div(class="movie" onclick="window.location.href='/movie/' + item.id")
+                img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
+                h2= item.title
+                p= item.overview
+                button(type="button", onclick=`event.stopPropagation(); removeMoviefromList('${item.id}')`) Remove from List
+            else if item.type === "tv"
+              div(class="tv" onclick="window.location.href='/tv/' + item.id")
+                img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
+                h2= item.name
+                p= item.overview
+                button(type="button", onclick=`event.stopPropagation(); removeMoviefromList('${item.id}')`) Remove from List
         button(type="button", onclick="window.location.href='/search'") Add Items
       section(class="filters")
           h2 Filters
-          form(action="/primary", method="POST")
+          form(action="/searchmovies", method="POST")
               input(type="hidden", name="searchQuery", value=searchQuery)
               h3 Filter by Type
               div
                 label
-                  input(type="checkbox", name="mediaType", value="movie", checked=mediaType && mediaType.includes("movie"))
+                  input(type="checkbox", name="mediaType", value="movie")
                   |  Movie
                 label
-                  input(type="checkbox", name="mediaType", value="tv", checked=mediaType && mediaType.includes("tv"))
+                  input(type="checkbox", name="mediaType", value="tv")
                   |  TV Show
               br
               h3 Filter by Genre
               div
                 label
-                  input(type="checkbox", name="genres", value="28", checked=genres && genres.includes("28"))
+                  input(type="checkbox", name="genres", value="28")
                   |  Action
                 label
-                  input(type="checkbox", name="genres", value="12", checked=genres && genres.includes("12"))
+                  input(type="checkbox", name="genres", value="12")
                   |  Adventure
                 label
-                  input(type="checkbox", name="genres", value="35", checked=genres && genres.includes("35"))
+                  input(type="checkbox", name="genres", value="35")
                   |  Comedy
                 label
-                  input(type="checkbox", name="genres", value="80", checked=genres && genres.includes("80"))
+                  input(type="checkbox", name="genres", value="80")
                   |  Crime
                 label
-                  input(type="checkbox", name="genres", value="14", checked=genres && genres.includes("14"))
+                  input(type="checkbox", name="genres", value="14")
                   |  Fantasy
                 label
-                  input(type="checkbox", name="genres", value="18", checked=genres && genres.includes("18"))
+                  input(type="checkbox", name="genres", value="18")
                   |  Drama
                 label
-                  input(type="checkbox", name="genres", value="10751", checked=genres && genres.includes("10751"))
+                  input(type="checkbox", name="genres", value="10751")
                   |  Family
                 label
-                  input(type="checkbox", name="genres", value="53", checked=genres && genres.includes("53"))
+                  input(type="checkbox", name="genres", value="53")
                   |  Thriller
                 label
-                  input(type="checkbox", name="genres", value="10749", checked=genres && genres.includes("10749"))
+                  input(type="checkbox", name="genres", value="10749")
                   |  Romance
                 label
-                  input(type="checkbox", name="genres", value="9648", checked=genres && genres.includes("9648"))
+                  input(type="checkbox", name="genres", value="9648")
                   |  Mystery
                 label
-                  input(type="checkbox", name="genres", value="878", checked=genres && genres.includes("878"))
+                  input(type="checkbox", name="genres", value="878")
                   |  Science Fiction
               button(type="submit") Apply Filters
     script.
