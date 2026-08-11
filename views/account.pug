@@ -2,7 +2,7 @@ extends layout.pug
 
 block principal
 
-    h1 Account
+    h1(class="account-title") Account
     section(class="acountInfo")
         form(action="/updateAccount", method="POST")
             p Username: #{user.username}

@@ -15,7 +15,7 @@ body {
 	background-color: var(--terciario);
 	font-family: var(--body-font);
 	font-weight: bold;
-    min-height: 100vh;
+    height: 100%;
 }
 
 nav {
@@ -321,6 +321,11 @@ button {
 }
 
 /* Account Info */
+.account-title {
+    text-align: center;
+    margin: 1rem 0;
+    font-size: 2.5rem;
+}
 
 .acountInfo {
     display: flex;
@@ -330,6 +335,7 @@ button {
     margin: 0rem 10rem;
     padding: 1rem;
     border-radius: 0.5rem;
+    margin-bottom: 3rem;
 }
 
 .acountInfo form {
@@ -344,6 +350,10 @@ button {
     width: 10rem;
     margin-left: 61%;
 }
+.acountInfo button {
+    margin-top: 1rem;
+    width: 15rem;
+}
 
 footer {
     text-align: center;
@@ -354,6 +364,7 @@ footer {
     font-weight: bold;
     align-self: flex-end;
     height: 3rem;
+    margin-top: 5%;
 }
 
 .hero {
@@ -460,6 +471,7 @@ footer {
     /*Login and Signup*/
     .signup, .login {
         margin: 10%;
+        width: 70%;
     }
 
     /*Search*/
@@ -467,6 +479,12 @@ footer {
         grid-template-columns: 1fr;
         grid-template-rows: auto auto auto;
     }
+    
+    .search, .items {
+        grid-column: 1 / 2;
+        grid-row: 2 / 3;
+    }
+
     .movie, .tv {
         display: flex;
         flex-direction: column;
@@ -491,6 +509,32 @@ footer {
     .items {
         grid-column: 1 / 2;
         grid-row: 2 / 3;
+    }
+
+    /* Account Info */
+    .acountInfo {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0rem 1rem;
+    }
+
+    .acountInfo form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    .acountInfo form button {
+        width: 90%;
+        margin-left: 0;
+    }
+
+    .acountInfo button {
+        width: 90%;
     }
 
 }

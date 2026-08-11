@@ -173,6 +173,32 @@ app.post("/deleteAccount", async function(req, res) {
     }
 });
 
+app.post("/updatePassword", async function(req, res) {
+    if (!req.session.userid) {
+        return res.redirect("/login");
+    }
+    const { currentPassword, newPassword } = req.body;
+
+    try {
+        const user = await User.findById(req.session.userid);
+        if (!user) {
+            return res.status(404).send("User not found.");
+        }
+
+        const isMatch = await user.comparePassword(currentPassword);
+        if (!isMatch) {
+            return res.status(400).send("Current password is incorrect.");
+        }
+
+        user.password = newPassword;
+        await user.save();
+        res.redirect("/account");
+    } catch (error) {
+        console.error("Error updating password:", error);
+        res.status(500).send("Internal server error.");
+    }
+});
+
 //Search
 app.post("/searchmovies", async function(req, res) {
     const searchQuery = req.body.searchQuery;
