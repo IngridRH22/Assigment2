@@ -94,7 +94,7 @@ app.post("/login", async function (req, res) {
             if (userList) {
                 items = await Promise.all(userList.items.map(item => idToItem(item.itemid, item.type)));
             }
-            res.render("primary", { userid: req.session.userid, items: items });
+            res.render("primary", { userid: req.session.userid, items: items, mediaType: undefined, genres: undefined});
         } else {
             res.render("login", { error: "Incorrect password.", username: req.body.username });
         }
@@ -120,7 +120,7 @@ app.post("/signup", async function(req, res) {
         console.log(nuevo);
         req.session.userid = nuevo._id;
         let items = [];
-        res.render("primary", { userid: req.session.userid, items: items });
+        res.render("primary", { userid: req.session.userid, items: items, mediaType: undefined, genres: undefined});
     }
 });
 
