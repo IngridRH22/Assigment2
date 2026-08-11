@@ -11,17 +11,19 @@ block principal
             if results
                 each item in results
                     if item.media_type === "movie" && (mediaType === "movie" || mediaType === undefined)
-                        div(class="movie" onclick="window.location.href='/movie/' + item.id")
-                            img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
-                            h2= item.title
-                            p= item.overview
-                            button(type="button", onclick=`event.stopPropagation(); addMovieToList('${item.id}', 'movie')`) Add to List
+                        if item.genre_ids.includes(parseInt(genres))
+                            div(class="movie" onclick="window.location.href='/movie/' + item.id")
+                                img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
+                                h2= item.title
+                                p= item.overview
+                                button(type="button", onclick=`event.stopPropagation(); addMovieToList('${item.id}', 'movie')`) Add to List
                     else if item.media_type === "tv" && (mediaType === "tv" || mediaType === undefined)
-                        div(class="tv" onclick="window.location.href='/tv/' + item.id")
-                            img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
-                            h2= item.name
-                            p= item.overview
-                            button(type="button", onclick=`event.stopPropagation(); addMovieToList('${item.id}', 'tv')`) Add to List
+                        if item.genre_ids.includes(parseInt(genres))
+                            div(class="tv" onclick="window.location.href='/tv/' + item.id")
+                                img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
+                                h2= item.name
+                                p= item.overview
+                                button(type="button", onclick=`event.stopPropagation(); addMovieToList('${item.id}', 'tv')`) Add to List
                     else if item.media_type === "person"
                        // div(class="person" onclick="window.location.href='/person/' + item.id")
                             img(src="https://image.tmdb.org/t/p/w500" + item.profile_path, alt=item.name)
