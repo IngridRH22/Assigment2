@@ -9,8 +9,10 @@ block principal
           p No items in your list.
         else
           each item in items
+          console.log(item)
             if item.media_type === "movie" && (mediaType === "movie" || mediaType === undefined)
               if item.genre_ids.includes(parseInt(genres)) || genres === undefined
+              console.log(item.genre_ids)
                 div(class="movie" onclick="window.location.href='/movie/' + item.id")
                   img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
                   h2= item.title

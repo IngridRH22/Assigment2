@@ -191,6 +191,7 @@ app.post("/searchmovies", async function(req, res) {
 
 //add
 app.post("/addMovieToList", async function(req, res) {
+    console.log("Received request to add item:", req.body);
     const { id, mediaType } = req.body;
     if (!req.session.userid) {
         return res.status(401).json({ success: false, message: "You must be logged in to add items." });
@@ -198,7 +199,7 @@ app.post("/addMovieToList", async function(req, res) {
 
     try {
         let userList = await List.findOne({ "userids.userid": req.session.userid});
-
+        console.log("User list found:", userList);
         if (!userList) {
             userList = await List.create({
                 userids: { userid: req.session.userid},
