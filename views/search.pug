@@ -30,6 +30,7 @@ block principal
         section(class="filters")
           h2 Filters
           form(action="/searchmovies", method="POST")
+              input(type="hidden", name="searchQuery", value=searchQuery)
               h3 Filter by Type
               div
                 label
