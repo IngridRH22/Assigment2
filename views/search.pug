@@ -81,6 +81,7 @@ block principal
     script.
         async function addMovieToList(id, mediaType) {
             try {
+                console.log("Adding item with ID:", id, "and mediaType:", mediaType);
                 const response = await fetch('/addMovieToList', {
                     method: 'POST',
                     headers: {
