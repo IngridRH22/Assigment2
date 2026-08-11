@@ -9,7 +9,7 @@ block principal
           p No items in your list.
         else
           each item in items
-            if item.type === "movie"
+            if item.type === "movie" && (mediaType === "movie" || mediaType === undefined)
               div(class="movie" onclick="window.location.href='/movie/' + item.id")
                 img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
                 h2= item.title
