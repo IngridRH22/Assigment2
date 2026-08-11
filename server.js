@@ -182,7 +182,7 @@ app.post("/searchmovies", async function(req, res) {
         const dataMovies = await response.json();
         const results = dataMovies.results;
         console.log(results);
-        res.render("search", { userid: req.session.userid, results: results, searchQuery: searchQuery });
+        res.render("search", { userid: req.session.userid, results: results, searchQuery: searchQuery, mediaType: req.body.mediaType, genres: req.body.genres });
     } catch (error) {
         console.error(error);
         res.status(500).send("Error searching for movies.");

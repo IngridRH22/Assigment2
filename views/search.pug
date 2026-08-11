@@ -10,13 +10,13 @@ block principal
                 button(type="submit") Search
             if results
                 each item in results
-                    if item.media_type === "movie"
+                    if item.media_type === "movie" && (mediaType === "movie" || mediaType === undefined)
                         div(class="movie" onclick="window.location.href='/movie/' + item.id")
                             img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
                             h2= item.title
                             p= item.overview
                             button(type="button", onclick=`event.stopPropagation(); addMovieToList('${item.id}', 'movie')`) Add to List
-                    else if item.media_type === "tv"
+                    else if item.media_type === "tv" && (mediaType === "tv" || mediaType === undefined)
                         div(class="tv" onclick="window.location.href='/tv/' + item.id")
                             img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
                             h2= item.name
@@ -33,46 +33,46 @@ block principal
               h3 Filter by Type
               div
                 label
-                  input(type="checkbox", name="movie", value="movie")
+                  input(type="checkbox", name="mediaType", value="movie")
                   |  Movie
                 label
-                  input(type="checkbox", name="tv", value="tv")
+                  input(type="checkbox", name="mediaType", value="tv")
                   |  TV Show
               br
               h3 Filter by Genre
               div
                 label
-                  input(type="checkbox", name="action", value="28")
+                  input(type="checkbox", name="genres", value="28")
                   |  Action
                 label
-                  input(type="checkbox", name="Adventure", value="12")
+                  input(type="checkbox", name="genres", value="12")
                   |  Adventure
                 label
-                  input(type="checkbox", name="Comedy", value="35")
+                  input(type="checkbox", name="genres", value="35")
                   |  Comedy
                 label
-                  input(type="checkbox", name="Crime", value="80")
+                  input(type="checkbox", name="genres", value="80")
                   |  Crime
                 label
-                  input(type="checkbox", name="Fantasy", value="99")
+                  input(type="checkbox", name="genres", value="14")
                   |  Fantasy
                 label
-                  input(type="checkbox", name="Drama", value="27")
+                  input(type="checkbox", name="genres", value="18")
                   |  Drama
                 label
-                  input(type="checkbox", name="Family", value="53")
+                  input(type="checkbox", name="genres", value="10751")
                   |  Family
                 label
-                  input(type="checkbox", name="Thriller", value="10752")
+                  input(type="checkbox", name="genres", value="53")
                   |  Thriller
                 label
-                  input(type="checkbox", name="Romance", value="10749")
+                  input(type="checkbox", name="genres", value="10749")
                   |  Romance
                 label
-                  input(type="checkbox", name="Mystery", value="9648")
+                  input(type="checkbox", name="genres", value="9648")
                   |  Mystery
                 label
-                  input(type="checkbox", name="ScienceFiction", value="16")
+                  input(type="checkbox", name="genres", value="878")
                   |  Science Fiction
               button(type="submit") Apply Filters
     script.
@@ -83,7 +83,7 @@ block principal
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ id: id, mediaType: mediaType })
+                    body: JSON.stringify({ id: id, mediaType: mediaType, genres: [genre_ids] })
                 });
 
                 const data = await response.json();
