@@ -10,7 +10,7 @@ block principal
         else
           each item in items
             if item.type === "movie" && (mediaType === "movie" || mediaType === undefined)
-              if genres === undefined || item.genre_ids.includes(parseInt(genres))
+              if genres === undefined || genres.some(g => item.genre_ids.includes(parseInt(g))))
                 div(class="movie" onclick="window.location.href='/movie/' + item.id")
                   img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
                   h2= item.title
