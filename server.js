@@ -255,6 +255,14 @@ app.post("/remMoviefromList", async function(req, res) {
 });
 
 //Rutas
+app.post("/primary", async function(req, res) {
+    let userList = await List.findOne({ "userids.userid": req.session.userid});
+    let items = [];
+    if (userList) {
+        items = await Promise.all(userList.items.map(item => idToItem(item.itemid, item.type)));
+    }
+    res.render("primary", { userid: req.session.userid, items: items, mediaType: req.body.mediaType, genres: req.body.genres});
+});
 app.get("/primary", async function(req, res) {
     let userList = await List.findOne({ "userids.userid": req.session.userid});
     let items = [];
