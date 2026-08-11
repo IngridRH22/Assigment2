@@ -180,13 +180,13 @@ app.post("/updatePassword", async function(req, res) {
     const { currentPassword, newPassword } = req.body;
 
     try {
-        const user = await User.findById(req.session.userid);
-        if (!user) {
+        const userf = await User.findById(req.session.userid);
+        if (!userf) {
             return res.status(404).send("User not found.");
         }
 
-        const isMatch = await user.comparePassword(currentPassword);
-        if (!isMatch) {
+        const Match = await bcrypt.compare(req.body.current_password, userf.password);
+        if (!Match) {
             return res.status(400).send("Current password is incorrect.");
         }
 
