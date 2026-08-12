@@ -181,20 +181,18 @@ app.post("/updatePassword", async function(req, res) {
     const { currentPassword, newPassword } = req.body;
 
     try {
-        const userf = await User.findById(req.session.userid);
-        if (!userf) {
+        const user = await User.findById(req.session.userid);
+        if (!user) {
             return res.status(404).send("User not found.");
         }
 
-        const Match = await bcrypt.compare(req.body.current_password, userf.password);
+        const Match = await bcrypt.compare(req.body.current_password, user.password);
         if (!Match) {
             return res.status(400).send("Current password is incorrect.");
         }
         const hashedPassword = await bcrypt.hash(req.body.new_password, 10);
-        console.log("Updating password for user:", userf._id);
-        const mod = await User.updateOne({ _id: userf._id }, { password: hashedPassword } );
-        console.log("Password updated:", mod);
-        res.redirect("/account", { user: userf, userid: req.session.userid });
+        const mod = await User.updateOne({ _id: user._id }, { password: hashedPassword } );
+        res.redirect("/account", { user: user, userid: req.session.userid });
     } catch (error) {
         console.error("Error updating password:", error);
         res.status(500).send("Internal server error.");
