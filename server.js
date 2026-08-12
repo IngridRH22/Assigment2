@@ -177,7 +177,7 @@ app.post("/updatePassword", async function(req, res) {
     if (!req.session.userid) {
         return res.redirect("/login");
     }
-    console.log("Received password update request:", req.body);
+
     const { currentPassword, newPassword } = req.body;
 
     try {
@@ -185,15 +185,15 @@ app.post("/updatePassword", async function(req, res) {
         if (!userf) {
             return res.status(404).send("User not found.");
         }
-        console.log("User found:", userf);
+        
         const Match = await bcrypt.compare(req.body.current_password, userf.password);
         if (!Match) {
             return res.status(400).send("Current password is incorrect.");
         }
 
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-        userf.password = newPassword;
-        await userf.save();
+        const mod = await User.updateOne({ _id: req.session.userid }, { $set: { password: hashedPassword } });
         res.redirect("/account");
     } catch (error) {
         console.error("Error updating password:", error);
