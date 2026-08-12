@@ -194,7 +194,7 @@ app.post("/updatePassword", async function(req, res) {
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
         const mod = await User.updateOne({ _id: userf._id }, { password: hashedPassword } );
-        res.redirect("/account");
+        res.redirect("/account", { user: userf, userid: req.session.userid });
     } catch (error) {
         console.error("Error updating password:", error);
         res.status(500).send("Internal server error.");
