@@ -190,9 +190,10 @@ app.post("/updatePassword", async function(req, res) {
         if (!Match) {
             return res.status(400).send("Current password is incorrect.");
         }
-
         const hashedPassword = await bcrypt.hash(req.body.new_password, 10);
-
+        console.log("Updating password for user:", userf._id);
+        const mod = await User.updateOne({ _id: userf._id }, { password: hashedPassword } );
+        console.log("Password updated:", mod);
         res.redirect("/account", { user: userf, userid: req.session.userid });
     } catch (error) {
         console.error("Error updating password:", error);
