@@ -191,9 +191,8 @@ app.post("/updatePassword", async function(req, res) {
             return res.status(400).send("Current password is incorrect.");
         }
 
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        const hashedPassword = await bcrypt.hash(req.body.new_password, 10);
 
-        const mod = await User.updateOne({ _id: userf._id }, { password: hashedPassword } );
         res.redirect("/account", { user: userf, userid: req.session.userid });
     } catch (error) {
         console.error("Error updating password:", error);
