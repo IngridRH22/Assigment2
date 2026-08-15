@@ -3,30 +3,53 @@ extends layout.pug
 block principal
 
     section(class="generalS")
+      aside(class="list-sidebar")
+        h2 Lists
+        if lists && lists.length
+          each list in lists
+            a(href=`/primary?listId=${list._id}`, class=listId && String(listId) === String(list._id) ? "list-btn active" : "list-btn")= list.listName
+        else
+          p.sidebar-empty No lists yet.
+        a(href="/newList", class="list-btn create") + New list
+
+        if selectedList
+          section(class="members-panel")
+            h3 People
+            if members && members.length
+              ul.member-list
+                each member in members
+                  li= member.username
+            else
+              p.sidebar-empty No members.
+            form#addMemberForm
+              input(type="hidden", name="listId", value=listId)
+              input(type="text", name="username", id="memberUsername", placeholder="Username", required=true)
+              button(type="submit") Add person
+
       div(class="items")
-        h2 My List
-        if items.length === 0
+        h2= listName || "My List"
+        if !items || items.length === 0
           p No items in your list.
         else
           each item in items
-            if item.type === "movie" && (mediaType === "movie" || mediaType === undefined)
-              if genres === undefined || item.genre_ids.includes(parseInt(genres))
-                div(class="movie" onclick="window.location.href='/movie/' + item.id")
-                  img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
-                  h2= item.title
-                  p= item.overview
-                  button(type="button", onclick=`event.stopPropagation(); removeMoviefromList('${item.id}')`) Remove from List
+            if item.type === "movie"
+              div(class="movie" onclick=`window.location.href='/movie/${item.id}'`)
+                img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
+                h2= item.title
+                p= item.overview
+                button(type="button", onclick=`event.stopPropagation(); removeMoviefromList('${item.id}')`) Remove from List
             else if item.type === "tv"
-              div(class="tv" onclick="window.location.href='/tv/' + item.id")
+              div(class="tv" onclick=`window.location.href='/tv/${item.id}'`)
                 img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
                 h2= item.name
                 p= item.overview
                 button(type="button", onclick=`event.stopPropagation(); removeMoviefromList('${item.id}')`) Remove from List
-        button(type="button", onclick="window.location.href='/search'") Add Items
+        button(type="button", class="add-items-btn", onclick="window.location.href='/search'") Add Items
+
       section(class="filters")
           h2 Filters
           form(action="/primary", method="POST")
-              input(type="hidden", name="searchQuery", value=searchQuery)
+              input(type="hidden", name="listId", value=listId)
               h3 Filter by Type
               div
                 label
@@ -72,29 +95,49 @@ block principal
                   input(type="checkbox", name="genres", value="878", checked=genres && genres.includes("878"))
                   |  Science Fiction
               button(type="submit") Apply Filters
+
     script.
-        async function removeMoviefromList(id) {
-            try {
-                const response = await fetch('/remMoviefromList', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: id })
-                });
+      const currentListId = !{JSON.stringify(listId ? String(listId) : null)};
 
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    alert(data.message);
-                } else {
-                    alert("Error: " + data.message);
-                }
-            } catch (error) {
-                console.error("Network error:", error);
-                alert("Could not connect to the server.");
-            }
+      async function removeMoviefromList(id) {
+        try {
+          const response = await fetch('/remMoviefromList', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id, listId: currentListId })
+          });
+          const data = await response.json();
+          if (response.ok && data.success) {
+            window.location.reload();
+          } else {
+            alert("Error: " + data.message);
+          }
+        } catch (error) {
+          console.error("Network error:", error);
+          alert("Could not connect to the server.");
         }
-    
-      
-    
+      }
+
+      const addMemberForm = document.getElementById('addMemberForm');
+      if (addMemberForm) {
+        addMemberForm.addEventListener('submit', async function(event) {
+          event.preventDefault();
+          const username = document.getElementById('memberUsername').value;
+          try {
+            const response = await fetch('/addMemberToList', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ listId: currentListId, username: username })
+            });
+            const data = await response.json();
+            if (response.ok && data.success) {
+              window.location.reload();
+            } else {
+              alert("Error: " + data.message);
+            }
+          } catch (error) {
+            console.error("Network error:", error);
+            alert("Could not connect to the server.");
+          }
+        });
+      }

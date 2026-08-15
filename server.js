@@ -66,7 +66,10 @@ const userSchema = new mongoose.Schema({
 });
 
 const listSchema = new mongoose.Schema({
-  userids: { userid: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true  } },
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  // Compatibilidad con listas antiguas
+  userids: { userid: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } },
   listName: { type: String, required: true },
   items: [{ itemid: { type: String, required: true },
             type: { type: String, required: true } }]
@@ -79,6 +82,127 @@ app.use(async (req, res, next) => {
   next();
 });
 
+function toArray(value) {
+  if (value === undefined || value === null || value === "") return [];
+  return Array.isArray(value) ? value : [value];
+}
+
+function userCanAccessList(list, userid) {
+  if (!list || !userid) return false;
+  const uid = String(userid);
+  if (list.owner && String(list.owner) === uid) return true;
+  if (Array.isArray(list.members) && list.members.some(m => String(m) === uid)) return true;
+  if (list.userids && list.userids.userid && String(list.userids.userid) === uid) return true;
+  return false;
+}
+
+function findListsQuery(userid) {
+  return {
+    $or: [
+      { owner: userid },
+      { members: userid },
+      { "userids.userid": userid }
+    ]
+  };
+}
+
+async function getAccessibleLists(userid) {
+  return List.find(findListsQuery(userid)).sort({ listName: 1 });
+}
+
+async function normalizeListAccess(list) {
+  if (!list) return list;
+  let changed = false;
+  if (!list.owner && list.userids && list.userids.userid) {
+    list.owner = list.userids.userid;
+    changed = true;
+  }
+  if (!Array.isArray(list.members)) {
+    list.members = [];
+    changed = true;
+  }
+  if (list.owner && !list.members.some(m => String(m) === String(list.owner))) {
+    list.members.push(list.owner);
+    changed = true;
+  }
+  if (changed) {
+    try { await list.save(); } catch (e) { console.error("List normalize error:", e.message); }
+  }
+  return list;
+}
+
+async function getListForUser(listId, userid) {
+  if (listId) {
+    const list = await List.findById(listId);
+    if (list && userCanAccessList(list, userid)) return normalizeListAccess(list);
+    return null;
+  }
+  const lists = await getAccessibleLists(userid);
+  if (!lists[0]) return null;
+  return normalizeListAccess(lists[0]);
+}
+
+function getItemGenreIds(item) {
+  if (!item) return [];
+  if (Array.isArray(item.genre_ids)) return item.genre_ids.map(Number);
+  if (Array.isArray(item.genres)) return item.genres.map(g => Number(g.id));
+  return [];
+}
+
+function filterItems(items, mediaTypes, genreIds) {
+  return items.filter(item => {
+    if (!item) return false;
+    const typeOk = mediaTypes.length === 0 || mediaTypes.includes(item.type) || mediaTypes.includes(item.media_type);
+    if (!typeOk) return false;
+    if (genreIds.length === 0) return true;
+    const itemGenres = getItemGenreIds(item);
+    return genreIds.some(g => itemGenres.includes(Number(g)));
+  });
+}
+
+async function loadPrimaryData(userid, options = {}) {
+  const mediaTypes = toArray(options.mediaType);
+  const genreIds = toArray(options.genres);
+  const lists = await getAccessibleLists(userid);
+  let selectedList = null;
+
+  if (options.listId) {
+    selectedList = lists.find(l => String(l._id) === String(options.listId)) || null;
+  }
+  if (!selectedList && lists.length > 0) {
+    selectedList = lists[0];
+  }
+  if (selectedList) {
+    selectedList = await normalizeListAccess(selectedList);
+  }
+
+  let items = [];
+  let members = [];
+  if (selectedList) {
+    items = await Promise.all(selectedList.items.map(item => idToItem(item.itemid, item.type)));
+    items = filterItems(items.filter(Boolean), mediaTypes, genreIds);
+
+    const memberIds = new Set();
+    if (selectedList.owner) memberIds.add(String(selectedList.owner));
+    (selectedList.members || []).forEach(m => memberIds.add(String(m)));
+    if (selectedList.userids && selectedList.userids.userid) {
+      memberIds.add(String(selectedList.userids.userid));
+    }
+    members = await User.find({ _id: { $in: Array.from(memberIds) } }).select("username email");
+  }
+
+  return {
+    userid,
+    lists,
+    selectedList,
+    listId: selectedList ? selectedList._id : null,
+    listName: selectedList ? selectedList.listName : "My List",
+    members,
+    items,
+    mediaType: mediaTypes,
+    genres: genreIds
+  };
+}
 
 app.get("/", function(req, res) {
    res.render("index",{ userid: req.session.userid});
@@ -89,12 +213,8 @@ app.post("/login", async function (req, res) {
     if (userf != null) {
         if (await bcrypt.compare(req.body.password, userf.password)) {
             req.session.userid = userf._id;
-            let userList = await List.findOne({ "userids.userid": req.session.userid });
-            let items = [];
-            if (userList) {
-                items = await Promise.all(userList.items.map(item => idToItem(item.itemid, item.type)));
-            }
-            res.render("primary", { userid: req.session.userid, items: items, mediaType: undefined, genres: undefined });
+            const data = await loadPrimaryData(req.session.userid);
+            res.render("primary", data);
         } else {
             res.render("login", { error: "Incorrect password.", username: req.body.username });
         }
@@ -119,8 +239,14 @@ app.post("/signup", async function(req, res) {
         let nuevo = await User.create({ email: req.body.email, username: req.body.username, password: hashedPassword });
         console.log(nuevo);
         req.session.userid = nuevo._id;
-        let items = [];
-        res.render("primary", { userid: req.session.userid, items: items, mediaType: undefined, genres: undefined});
+        await List.create({
+            owner: nuevo._id,
+            members: [nuevo._id],
+            listName: "Personal List",
+            items: []
+        });
+        const data = await loadPrimaryData(req.session.userid);
+        res.render("primary", data);
     }
 });
 
@@ -144,8 +270,7 @@ app.post("/updateAccount", async function(req, res) {
         }
 
         await user.save();
-        alert("Account updated successfully");
-        res.redirect("/account", { user: user, userid: req.session.userid });
+        res.redirect("/account");
     } catch (error) {
         console.error("Error updating account:", error);
         res.status(500).send("Internal server error.");
@@ -163,8 +288,13 @@ app.post("/deleteAccount", async function(req, res) {
             return res.status(404).send("User not found.");
         }
 
-        const userList = await List.deleteMany({ "userids.userid": req.session.userid });
-        const userDeletion = await User.deleteOne({ _id: req.session.userid });
+        await List.deleteMany({ owner: req.session.userid });
+        await List.updateMany(
+          { members: req.session.userid },
+          { $pull: { members: req.session.userid } }
+        );
+        await List.deleteMany({ "userids.userid": req.session.userid, owner: { $exists: false } });
+        await User.deleteOne({ _id: req.session.userid });
         req.session.destroy();
         res.redirect("/signup");
     } catch (error) {
@@ -178,8 +308,6 @@ app.post("/updatePassword", async function(req, res) {
         return res.redirect("/login");
     }
 
-    const { currentPassword, newPassword } = req.body;
-
     try {
         const user = await User.findById(req.session.userid);
         if (!user) {
@@ -191,7 +319,7 @@ app.post("/updatePassword", async function(req, res) {
             return res.status(400).send("Current password is incorrect.");
         }
         const hashedPassword = await bcrypt.hash(req.body.new_password, 10);
-        const mod = await User.updateOne({ _id: user._id }, { password: hashedPassword } );
+        await User.updateOne({ _id: user._id }, { password: hashedPassword } );
         res.render("account", { user: user, userid: req.session.userid });
     } catch (error) {
         console.error("Error updating password:", error);
@@ -202,45 +330,91 @@ app.post("/updatePassword", async function(req, res) {
 //Search
 app.post("/searchmovies", async function(req, res) {
     const searchQuery = req.body.searchQuery;
-    const url = urldefault + "/search/multi?query=" + req.body.searchQuery + "&include_adult=false&language=en-US&page=1";
+    const mediaTypes = toArray(req.body.mediaType);
+    const genreIds = toArray(req.body.genres);
+    const url = urldefault + "/search/multi?query=" + encodeURIComponent(req.body.searchQuery) + "&include_adult=false&language=en-US&page=1";
     try {
         const response = await fetch(url, tmdbOptions);
         const dataMovies = await response.json();
-        const results = dataMovies.results;
-        console.log(results);
-        res.render("search", { userid: req.session.userid, results: results, searchQuery: searchQuery, mediaType: req.body.mediaType, genres: req.body.genres });
+        let results = dataMovies.results || [];
+        results = results.map(r => ({ ...r, type: r.media_type }));
+        results = filterItems(results, mediaTypes, genreIds);
+        res.render("search", {
+          userid: req.session.userid,
+          results,
+          searchQuery,
+          mediaType: mediaTypes,
+          genres: genreIds
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send("Error searching for movies.");
     }
 });
 
+app.get("/api/lists", async function(req, res) {
+    if (!req.session.userid) {
+        return res.status(401).json({ success: false, message: "You must be logged in." });
+    }
+    try {
+        const lists = await getAccessibleLists(req.session.userid);
+        return res.json({
+          success: true,
+          lists: lists.map(l => ({ _id: l._id, listName: l.listName }))
+        });
+    } catch (error) {
+        console.error("Error fetching lists:", error);
+        return res.status(500).json({ success: false, message: "Internal server error." });
+    }
+});
+
 //add
 app.post("/addMovieToList", async function(req, res) {
     console.log("Received request to add item:", req.body);
-    const { id, mediaType } = req.body;
+    const { id, mediaType, listId, newListName } = req.body;
     if (!req.session.userid) {
         return res.status(401).json({ success: false, message: "You must be logged in to add items." });
     }
 
     try {
-        let userList = await List.findOne({ "userids.userid": req.session.userid});
-        console.log("User list found:", userList);
+        let userList = null;
+
+        if (newListName && String(newListName).trim()) {
+            userList = await List.create({
+                owner: req.session.userid,
+                members: [req.session.userid],
+                listName: String(newListName).trim(),
+                items: [{ itemid: String(id), type: mediaType }]
+            });
+            return res.status(201).json({
+              success: true,
+              message: "List created and item added successfully!",
+              listId: userList._id
+            });
+        }
+
+        if (listId) {
+            userList = await getListForUser(listId, req.session.userid);
+        } else {
+            userList = await getListForUser(null, req.session.userid);
+        }
+
         if (!userList) {
             userList = await List.create({
-                userids: { userid: req.session.userid},
+                owner: req.session.userid,
+                members: [req.session.userid],
                 listName: "Personal List",
-                items: [{ itemid: id, type: mediaType }]
+                items: [{ itemid: String(id), type: mediaType }]
             });
             return res.status(201).json({ success: true, message: "List created and item added successfully!" });
         }
 
-        const itemExists = userList.items.some(item => item.itemid === id);
+        const itemExists = userList.items.some(item => String(item.itemid) === String(id));
         if (itemExists) {
             return res.status(400).json({ success: false, message: "This item is already in your list." });
         }
 
-        userList.items.push({ itemid: id, type: mediaType });
+        userList.items.push({ itemid: String(id), type: mediaType });
         await userList.save();
 
         return res.status(200).json({ success: true, message: "Item added to your list!" });
@@ -253,19 +427,19 @@ app.post("/addMovieToList", async function(req, res) {
 
 //remove
 app.post("/remMoviefromList", async function(req, res) {
-    const { id } = req.body;
+    const { id, listId } = req.body;
     if (!req.session.userid) {
         return res.status(401).json({ success: false, message: "You must be logged in to remove items." });
     }
 
     try {
-        let userList = await List.findOne({ "userids.userid": req.session.userid});
+        let userList = await getListForUser(listId, req.session.userid);
 
         if (!userList) {
             return res.status(404).json({ success: false, message: "List not found." });
         }
 
-        const itemIndex = userList.items.findIndex(item => item.itemid === id);
+        const itemIndex = userList.items.findIndex(item => String(item.itemid) === String(id));
         if (itemIndex === -1) {
             return res.status(404).json({ success: false, message: "Item not found in your list." });
         }
@@ -281,22 +455,110 @@ app.post("/remMoviefromList", async function(req, res) {
     }
 });
 
+app.post("/newList", async function(req, res) {
+    if (!req.session.userid) {
+        return res.redirect("/login");
+    }
+    const listName = (req.body.listName || "").trim();
+    if (!listName) {
+        return res.render("newList", { userid: req.session.userid, error: "List name is required." });
+    }
+    const created = await List.create({
+        owner: req.session.userid,
+        members: [req.session.userid],
+        listName,
+        items: []
+    });
+    res.redirect("/primary?listId=" + created._id);
+});
+
+app.post("/addMemberToList", async function(req, res) {
+    if (!req.session.userid) {
+        return res.status(401).json({ success: false, message: "You must be logged in." });
+    }
+
+    const { listId, username } = req.body;
+    if (!listId || !username) {
+        return res.status(400).json({ success: false, message: "List and username are required." });
+    }
+
+    try {
+        const list = await getListForUser(listId, req.session.userid);
+        if (!list) {
+            return res.status(404).json({ success: false, message: "List not found." });
+        }
+
+        const userToAdd = await User.findOne({ username: String(username).trim() });
+        if (!userToAdd) {
+            return res.status(404).json({ success: false, message: "User not found." });
+        }
+
+        if (userCanAccessList(list, userToAdd._id)) {
+            return res.status(400).json({ success: false, message: "User already has access to this list." });
+        }
+
+        if (!list.owner && list.userids && list.userids.userid) {
+            list.owner = list.userids.userid;
+        }
+        if (!Array.isArray(list.members)) {
+            list.members = [];
+        }
+        if (list.owner && !list.members.some(m => String(m) === String(list.owner))) {
+            list.members.push(list.owner);
+        }
+        list.members.push(userToAdd._id);
+        await list.save();
+
+        return res.status(200).json({
+          success: true,
+          message: userToAdd.username + " was added to the list.",
+          member: { username: userToAdd.username, email: userToAdd.email }
+        });
+    } catch (error) {
+        console.error("Error adding member:", error);
+        return res.status(500).json({ success: false, message: "Internal server error." });
+    }
+});
+
 //Rutas
 app.post("/primary", async function(req, res) {
-    let userList = await List.findOne({ "userids.userid": req.session.userid});
-    let items = [];
-    if (userList) {
-        items = await Promise.all(userList.items.map(item => idToItem(item.itemid, item.type)));
+    if (!req.session.userid) {
+        return res.redirect("/login");
     }
-    res.render("primary", { userid: req.session.userid, items: items, mediaType: req.body.mediaType, genres: req.body.genres});
+    const data = await loadPrimaryData(req.session.userid, {
+      listId: req.body.listId,
+      mediaType: req.body.mediaType,
+      genres: req.body.genres
+    });
+    res.render("primary", data);
 });
+
 app.get("/primary", async function(req, res) {
-    let userList = await List.findOne({ "userids.userid": req.session.userid});
-    let items = [];
-    if (userList) {
-        items = await Promise.all(userList.items.map(item => idToItem(item.itemid, item.type)));
+    if (!req.session.userid) {
+        return res.redirect("/login");
     }
-    res.render("primary", { userid: req.session.userid, items: items, mediaType: undefined, genres: undefined});
+    const data = await loadPrimaryData(req.session.userid, {
+      listId: req.query.listId,
+      mediaType: req.query.mediaType,
+      genres: req.query.genres
+    });
+    res.render("primary", data);
+});
+
+app.get("/movie/:id", async function(req, res) {
+    const item = await idToItem(req.params.id, "movie");
+    if (!item || item.success === false) {
+        return res.status(404).send("Movie not found.");
+    }
+    res.render("detail", { userid: req.session.userid, item, mediaKind: "movie" });
+});
+
+app.get("/tv/:id", async function(req, res) {
+    const item = await idToItem(req.params.id, "tv");
+    if (!item || item.success === false) {
+        return res.status(404).send("TV show not found.");
+    }
+    res.render("detail", { userid: req.session.userid, item, mediaKind: "tv" });
 });
 
 app.get("/signup", function(req, res) {
@@ -308,11 +570,14 @@ app.get("/login", function(req, res) {
 });
 
 app.get("/newList", function(req, res) {
+    if (!req.session.userid) {
+        return res.redirect("/login");
+    }
     res.render("newList", { userid: req.session.userid });
 });
 
 app.get("/search", function(req, res) {
-    res.render("search", { userid: req.session.userid });
+    res.render("search", { userid: req.session.userid, mediaType: [], genres: [] });
 });
 
 app.get("/account", async function(req, res) {
@@ -361,7 +626,7 @@ async function idToItem(id, type) {
         const url = `${urldefault}/${type}/${id}?language=en-US`;
         const response = await fetch(url, tmdbOptions);
         const data = await response.json();
-        data.type = type; // <-- AÑADIR EL TIPO AQUÍ
+        data.type = type;
         return data;
     } catch (error) {
         console.error("Error fetching item by ID:", error);

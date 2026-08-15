@@ -4,8 +4,9 @@ block principal
 
     section(class="newList")
         h1 Create a new list
+        if error
+          p.error-messages= error
         form(action="/newList", method="POST")
-            input(type="text", name="listName", id="listName", required = true, placeholder="Enter the name of the list")
+            input(type="text", name="listName", id="listName", required=true, placeholder="Enter the name of the list")
             br
             button(type="submit") Create List
-        

@@ -6,29 +6,22 @@ block principal
         section(class="search")
             h1 Search for movies
             form(action="/searchmovies", method="POST")
-                input(type="text", name="searchQuery", id="searchQuery", required = true, placeholder="Search a movie, series or person", value=searchQuery)
+                input(type="text", name="searchQuery", id="searchQuery", required=true, placeholder="Search a movie, series or person", value=searchQuery)
                 button(type="submit") Search
             if results
                 each item in results
-                    if item.media_type === "movie" && (mediaType === "movie" || mediaType === undefined)
-                        if item.genre_ids.includes(parseInt(genres)) || genres === undefined
-                            div(class="movie" onclick="window.location.href='/movie/' + item.id")
-                                img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
-                                h2= item.title
-                                p= item.overview
-                                button(type="button", onclick=`event.stopPropagation(); addMovieToList('${item.id}', 'movie')`) Add to List
-                    else if item.media_type === "tv" && (mediaType === "tv" || mediaType === undefined)
-                        if item.genre_ids.includes(parseInt(genres)) || genres === undefined
-                            div(class="tv" onclick="window.location.href='/tv/' + item.id")
-                                img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
-                                h2= item.name
-                                p= item.overview
-                                button(type="button", onclick=`event.stopPropagation(); addMovieToList('${item.id}', 'tv')`) Add to List
-                    else if item.media_type === "person"
-                       // div(class="person" onclick="window.location.href='/person/' + item.id")
-                            img(src="https://image.tmdb.org/t/p/w500" + item.profile_path, alt=item.name)
+                    if item.media_type === "movie"
+                        div(class="movie" onclick=`window.location.href='/movie/${item.id}'`)
+                            img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
+                            h2= item.title
+                            p= item.overview
+                            button(type="button", onclick=`event.stopPropagation(); openAddModal('${item.id}', 'movie')`) Add to List
+                    else if item.media_type === "tv"
+                        div(class="tv" onclick=`window.location.href='/tv/${item.id}'`)
+                            img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
                             h2= item.name
-                            p= item.known_for_department//
+                            p= item.overview
+                            button(type="button", onclick=`event.stopPropagation(); openAddModal('${item.id}', 'tv')`) Add to List
         section(class="filters")
           h2 Filters
           form(action="/searchmovies", method="POST")
@@ -78,26 +71,106 @@ block principal
                   input(type="checkbox", name="genres", value="878", checked=genres && genres.includes("878"))
                   |  Science Fiction
               button(type="submit") Apply Filters
+
+    div#listModal.modal(hidden)
+      div.modal-backdrop(onclick="closeAddModal()")
+      div.modal-panel
+        h2 Add to list
+        p.modal-subtitle Choose an existing list or create a new one.
+        div#listOptions.list-options
+          p.loading-lists Loading lists...
+        div.create-list-box
+          label(for="newListName") Create new list
+          input#newListName(type="text", placeholder="List name")
+          button#confirmAddBtn(type="button") Confirm
+        button.modal-cancel(type="button", onclick="closeAddModal()") Cancel
+
     script.
-        async function addMovieToList(id, mediaType) {
-            try {
-                const response = await fetch('/addMovieToList', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: id, mediaType: mediaType})
-                });
+      let pendingItem = null;
+      let selectedListId = null;
 
-                const data = await response.json();
+      async function openAddModal(id, mediaType) {
+        pendingItem = { id, mediaType };
+        selectedListId = null;
+        document.getElementById('newListName').value = '';
+        document.getElementById('listModal').hidden = false;
+        const options = document.getElementById('listOptions');
+        options.innerHTML = '<p class="loading-lists">Loading lists...</p>';
 
-                if (response.ok && data.success) {
-                    alert(data.message);
-                } else {
-                    alert("Error: " + data.message);
-                }
-            } catch (error) {
-                console.error("Network error:", error);
-                alert("Could not connect to the server.");
-            }
+        try {
+          const response = await fetch('/api/lists');
+          const data = await response.json();
+          if (!response.ok || !data.success) {
+            options.innerHTML = '<p class="loading-lists">Could not load lists.</p>';
+            return;
+          }
+          if (!data.lists.length) {
+            options.innerHTML = '<p class="loading-lists">No lists yet. Create one below.</p>';
+            return;
+          }
+          options.innerHTML = data.lists.map(list =>
+            `<button type="button" class="list-option" data-id="${list._id}">${list.listName}</button>`
+          ).join('');
+          options.querySelectorAll('.list-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+              selectedListId = btn.dataset.id;
+              options.querySelectorAll('.list-option').forEach(b => b.classList.remove('selected'));
+              btn.classList.add('selected');
+              document.getElementById('newListName').value = '';
+            });
+          });
+        } catch (error) {
+          console.error(error);
+          options.innerHTML = '<p class="loading-lists">Could not load lists.</p>';
         }
+      }
+
+      function closeAddModal() {
+        document.getElementById('listModal').hidden = true;
+        pendingItem = null;
+        selectedListId = null;
+      }
+
+      document.getElementById('confirmAddBtn').addEventListener('click', async function() {
+        if (!pendingItem) return;
+        const newListName = document.getElementById('newListName').value.trim();
+        if (!selectedListId && !newListName) {
+          alert('Select a list or enter a name for a new one.');
+          return;
+        }
+
+        const body = {
+          id: pendingItem.id,
+          mediaType: pendingItem.mediaType
+        };
+        if (newListName) {
+          body.newListName = newListName;
+        } else {
+          body.listId = selectedListId;
+        }
+
+        try {
+          const response = await fetch('/addMovieToList', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+          const data = await response.json();
+          if (response.ok && data.success) {
+            closeAddModal();
+            alert(data.message);
+          } else {
+            alert('Error: ' + data.message);
+          }
+        } catch (error) {
+          console.error('Network error:', error);
+          alert('Could not connect to the server.');
+        }
+      });
+
+      document.getElementById('newListName').addEventListener('input', function() {
+        if (this.value.trim()) {
+          selectedListId = null;
+          document.querySelectorAll('.list-option').forEach(b => b.classList.remove('selected'));
+        }
+      });
