@@ -7,7 +7,10 @@ block principal
         h2 Lists
         if lists && lists.length
           each list in lists
-            a(href=`/primary?listId=${list._id}`, class=listId && String(listId) === String(list._id) ? "list-btn active" : "list-btn")= list.listName
+            - var isOwner = (list.owner && String(list.owner) === String(userid)) || (list.userids && list.userids.userid && String(list.userids.userid) === String(userid))
+            div.list-row
+              a(href=`/primary?listId=${list._id}`, class=listId && String(listId) === String(list._id) ? "list-btn active" : "list-btn")= list.listName
+              button.list-delete(type="button", title=isOwner ? "Delete list" : "Leave list", aria-label=isOwner ? "Delete list" : "Leave list", onclick=`deleteList('${list._id}', ${isOwner})`)= "×"
         else
           p.sidebar-empty No lists yet.
         a(href="/newList", class="list-btn create") + New list
@@ -108,6 +111,29 @@ block principal
 
     script.
       const currentListId = !{JSON.stringify(listId ? String(listId) : null)};
+
+      async function deleteList(id, isOwner) {
+        const message = isOwner
+          ? "Delete this list permanently?"
+          : "Leave this shared list?";
+        if (!confirm(message)) return;
+        try {
+          const response = await fetch('/deleteList', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ listId: id })
+          });
+          const data = await response.json();
+          if (response.ok && data.success) {
+            window.location.href = '/primary';
+          } else {
+            alert("Error: " + data.message);
+          }
+        } catch (error) {
+          console.error("Network error:", error);
+          alert("Could not connect to the server.");
+        }
+      }
 
       async function removeMoviefromList(id) {
         try {

@@ -60,53 +60,82 @@ nav {
 nav a {
     color: var(--blanco);
     text-decoration: none;
-    margin: 0 1rem;
+    margin: 0;
     font-family: var(--body-font);
     font-weight: bold;
-    align-self: right;
 }
 
-nav section {
+.nav-actions {
     display: flex;
-    justify-content: right;
+    justify-content: flex-end;
     align-items: center;
     margin-left: auto;
     flex-direction: row;
+    gap: 0.5rem;
+    background: transparent;
+    padding: 0;
 }
 
 .home {
-    height: 0.5rem;
-    margin-left: 0rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: 0;
+    padding: 0;
+    border-radius: 0.5rem;
+    color: var(--blanco);
+    flex-shrink: 0;
+    line-height: 0;
+}
+
+.home:hover {
+    background-color: rgba(124, 58, 237, 0.35);
+    color: var(--acento);
 }
 
 .home svg {
-    margin: 0rem;
-    padding: 0rem;
+    margin: 0;
+    padding: 0;
+    display: block;
+    width: 1.75rem;
+    height: 1.75rem;
 }
 
 .SandL {
-    align-self: left;
     background-color: var(--primario);
     color: var(--blanco);
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
+    display: inline-flex;
+    align-items: center;
 }
 
 .account {
-    align-self: left;
     background-color: var(--secundario);
     color: var(--blanco);
-    border-radius: 1.5rem;
-    margin-left: 1rem;
+    border-radius: 50%;
+    margin: 0;
     width: 2.5rem;
     height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.account svg {
+    margin: 0;
+    width: 1.35rem;
+    height: 1.35rem;
 }
 
 .theme-toggle {
     width: auto;
     min-width: 2.5rem;
     height: 2.5rem;
-    margin: 0 0.5rem 0 1rem;
+    margin: 0;
     padding: 0.35rem 0.75rem;
     border-radius: 0.5rem;
     background-color: var(--panel);
@@ -480,6 +509,37 @@ button:hover {
     font-family: var(--body-font);
     font-weight: bold;
     cursor: pointer;
+}
+
+.list-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0.35rem;
+    margin: 0.2rem 0;
+}
+
+.list-row .list-btn {
+    flex: 1;
+    margin: 0;
+    min-width: 0;
+}
+
+.list-delete {
+    width: 2.4rem;
+    min-width: 2.4rem;
+    margin: 0;
+    padding: 0;
+    border-radius: 0.5rem;
+    background-color: rgba(220, 38, 38, 0.35);
+    color: var(--blanco);
+    border: 1px solid rgba(248, 113, 113, 0.45);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.list-delete:hover {
+    background-color: #dc2626;
 }
 
 .list-btn:hover,

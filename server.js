@@ -538,6 +538,42 @@ app.post("/newList", async function(req, res) {
     res.redirect("/primary?listId=" + created._id);
 });
 
+app.post("/deleteList", async function(req, res) {
+    if (!req.session.userid) {
+        return res.status(401).json({ success: false, message: "You must be logged in." });
+    }
+
+    const { listId } = req.body;
+    if (!listId) {
+        return res.status(400).json({ success: false, message: "List id is required." });
+    }
+
+    try {
+        const list = await getListForUser(listId, req.session.userid);
+        if (!list) {
+            return res.status(404).json({ success: false, message: "List not found." });
+        }
+
+        const uid = String(req.session.userid);
+        const isOwner =
+          (list.owner && String(list.owner) === uid) ||
+          (list.userids && list.userids.userid && String(list.userids.userid) === uid && !list.owner);
+
+        if (isOwner) {
+            await List.deleteOne({ _id: list._id });
+            return res.status(200).json({ success: true, message: "List deleted." });
+        }
+
+        // Miembro compartido: solo sale de la lista
+        list.members = (list.members || []).filter(m => String(m) !== uid);
+        await list.save();
+        return res.status(200).json({ success: true, message: "You left the list." });
+    } catch (error) {
+        console.error("Error deleting list:", error);
+        return res.status(500).json({ success: false, message: "Internal server error." });
+    }
+});
+
 app.post("/addMemberToList", async function(req, res) {
     if (!req.session.userid) {
         return res.status(401).json({ success: false, message: "You must be logged in." });
