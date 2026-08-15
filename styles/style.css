@@ -6,29 +6,54 @@
 	--acento: #22c55e;
 	--terciario: #e8e0f5;
 	--panel: #2a1840;
+	--bg: #e8e0f5;
+	--text: #1a1024;
+	--overlay: rgba(26, 16, 36, 0.88);
+	--input-bg: #ffffff;
+	--input-text: #1a1024;
 	--header-font: "DM Sans", sans-serif;
 	--body-font: "Epilogue", sans-serif;
 	--title-font: "DM Sans", sans-serif;
+}
+
+html.dark {
+	--blanco: #efe8ff;
+	--oscuro: #0d0814;
+	--primario: #8b5cf6;
+	--secundario: #22c55e;
+	--acento: #4ade80;
+	--terciario: #140c1f;
+	--panel: #1c102c;
+	--bg: #0d0814;
+	--text: #efe8ff;
+	--overlay: rgba(8, 5, 14, 0.92);
+	--input-bg: #241433;
+	--input-text: #efe8ff;
 }
 
 
 body {
 	margin: 0;
 	padding: 0;
-	background:
-		radial-gradient(circle at top left, rgba(124, 58, 237, 0.18), transparent 35%),
-		radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.14), transparent 40%),
-		var(--terciario);
+	background-color: var(--bg);
+	color: var(--text);
 	font-family: var(--body-font);
 	font-weight: bold;
-    height: 100%;
 	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.page-content {
+	flex: 1 0 auto;
+	width: 100%;
 }
 
 nav {
     display: flex;
     justify-content: space-between;
-    background: linear-gradient(90deg, var(--oscuro), #241433 55%, #143d30);
+    align-items: center;
+    background-color: var(--oscuro);
     padding: 1rem;
 }
 
@@ -72,9 +97,30 @@ nav section {
     background-color: var(--secundario);
     color: var(--blanco);
     border-radius: 1.5rem;
-    margin-left: 30%;
+    margin-left: 1rem;
     width: 2.5rem;
     height: 2.5rem;
+}
+
+.theme-toggle {
+    width: auto;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    margin: 0 0.5rem 0 1rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.5rem;
+    background-color: var(--panel);
+    color: var(--blanco);
+    border: 1px solid var(--primario);
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.theme-toggle:hover {
+    background-color: var(--primario);
 }
 
 svg {
@@ -97,7 +143,7 @@ section {
     padding: 1rem;
     margin: 6% 38%;
     box-shadow: 0 0 10px #00000080;
-    background: linear-gradient(160deg, var(--panel), #143d30);
+    background-color: var(--panel);
 }
 
 .login {
@@ -116,10 +162,10 @@ input {
     width: 90%;
     padding: 0.5rem;
     margin: 0.3rem 0;
-    border: none;
+    border: 1px solid rgba(124, 58, 237, 0.35);
     border-radius: 0.5rem;
-    background-color: var(--blanco);
-    color: var(--oscuro);
+    background-color: var(--input-bg);
+    color: var(--input-text);
     font-family: var(--body-font);
     font-weight: bold;
 }
@@ -194,7 +240,7 @@ button:hover {
     margin: 1rem 0;
     padding: 1rem;
     background-color: transparent;
-    color: var(--oscuro);
+    color: var(--text);
 }
 
 .generalS h2 {
@@ -209,7 +255,7 @@ button:hover {
     display: flex;
     flex-direction: column;
     background-color: transparent;
-    color: var(--oscuro);
+    color: var(--text);
     font-family: var(--title-font);
     font-weight: bold;
     font-size: 1.6rem;
@@ -243,16 +289,17 @@ button:hover {
 }
 
 .movie, .tv {
-    background: linear-gradient(135deg, var(--oscuro), #241433 60%, #143d30);
+    background-color: var(--panel);
     color: var(--blanco);
     border-radius: 0.5rem;
     padding: 1rem;
     margin: 1rem 0;
     display: grid;
-    grid-template-columns: 10rem auto;
-    grid-template-rows: 15% 65% auto;
+    grid-template-columns: 10rem minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
     width: 90%;
-    height: 15rem;
+    min-height: 15rem;
+    height: auto;
     align-self: center;
     cursor: pointer;
     border: 1px solid rgba(124, 58, 237, 0.35);
@@ -296,21 +343,62 @@ button:hover {
     margin-left: 1rem;
     text-align: justify;
     overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
 }
 
-.movie button, .tv button {
+.item-actions {
     grid-column: 2 / 3;
     grid-row: 3 / 4;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin: 0.5rem 1rem 0;
+}
+
+.star-rating {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.15rem;
+}
+
+.star-label {
+    font-size: 0.75rem;
+    font-weight: normal;
+    margin-right: 0.4rem;
+    opacity: 0.9;
+    width: 100%;
+}
+
+.star {
+    width: auto;
+    min-width: 1.6rem;
+    margin: 0;
+    padding: 0.1rem 0.2rem;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 1.35rem;
+    line-height: 1;
+    border-radius: 0.25rem;
+}
+
+.star:hover,
+.star.filled {
+    background: transparent;
+    color: #fbbf24;
+}
+
+.remove-btn {
+    width: auto;
+    margin: 0;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.9rem;
     background-color: var(--primario);
     color: var(--blanco);
-    width: 7rem;
-    margin-left: 72%;
-    border-radius: 0.5rem;
-    font-family: var(--body-font);
-    font-weight: bold;
-    align-self: flex-end;
-    cursor: pointer;
-    font-size: 1rem;
 }
 
 .filters {
@@ -325,7 +413,7 @@ button:hover {
     padding: 1rem;
     border-radius: 0.5rem;
     margin-top: 1rem;
-    background: linear-gradient(180deg, var(--panel), #143d30);
+    background-color: var(--panel);
 }
 
 .filters div {
@@ -365,7 +453,7 @@ button:hover {
     margin: 0 0.5rem;
     padding: 1rem;
     border-radius: 0.75rem;
-    background: linear-gradient(180deg, var(--panel), #1f2f28);
+    background-color: var(--panel);
     color: var(--blanco);
 }
 
@@ -476,7 +564,7 @@ button:hover {
     position: relative;
     z-index: 1;
     width: min(28rem, 92vw);
-    background: linear-gradient(160deg, #2a1840, #143d30);
+    background-color: var(--panel);
     color: var(--blanco);
     border-radius: 1rem;
     padding: 1.5rem;
@@ -564,6 +652,19 @@ button:hover {
     align-items: center;
     justify-content: center;
     padding: 2rem 1rem;
+    position: relative;
+}
+
+.detail-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--overlay);
+}
+
+.detail-hero > * {
+    position: relative;
+    z-index: 1;
 }
 
 .detail-content {
@@ -577,7 +678,7 @@ button:hover {
 .detail-content.plain {
     display: block;
     padding: 3rem 1rem;
-    color: var(--oscuro);
+    color: var(--text);
 }
 
 .detail-poster {
@@ -673,7 +774,7 @@ button:hover {
     margin: 4rem auto;
     padding: 2rem;
     border-radius: 1rem;
-    background: linear-gradient(160deg, var(--panel), #143d30);
+    background-color: var(--panel);
 }
 
 /* Account Info */
@@ -693,7 +794,7 @@ button:hover {
     padding: 1rem;
     border-radius: 0.5rem;
     margin-bottom: 3rem;
-    background: linear-gradient(160deg, var(--panel), #143d30);
+    background-color: var(--panel);
 }
 
 .acountInfo form {
@@ -714,21 +815,26 @@ button:hover {
 }
 
 footer {
+    flex-shrink: 0;
+    width: 100%;
+    box-sizing: border-box;
     text-align: center;
     padding: 1rem;
-    background: linear-gradient(90deg, var(--oscuro), #143d30);
+    background-color: var(--oscuro);
     color: var(--blanco);
     font-family: var(--body-font);
     font-weight: bold;
-    align-self: flex-end;
-    height: 3rem;
-    margin-top: 10%;
+    margin-top: auto;
+}
+
+footer p {
+    margin: 0;
 }
 
 .hero {
     padding: 5rem 1rem 4rem;
     text-align: center;
-    background: linear-gradient(160deg, var(--oscuro), #241433 45%, #143d30);
+    background-color: var(--panel);
 }
 
 .hero h1 {
@@ -765,7 +871,7 @@ footer {
 
 .features {
     padding: 3rem 1rem;
-    background: linear-gradient(180deg, #241433, #143d30);
+    background-color: var(--panel);
 }
 
 .features h2 {
@@ -807,7 +913,7 @@ footer {
 .cta {
     padding: 3rem 1rem;
     text-align: center;
-    background: linear-gradient(160deg, var(--oscuro), #143d30);
+    background-color: var(--panel);
 }
 
 .cta h2 {
@@ -868,9 +974,24 @@ footer {
         margin: 0.5rem 0;
     }
 
-    .movie button, .tv button {
-        margin-left: 0;
+    .item-actions {
+        width: 100%;
+        margin: 0.75rem 0 0;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .star-label {
         width: auto;
+        margin-right: 0.5rem;
+    }
+
+    .star-rating {
+        justify-content: center;
+    }
+
+    .remove-btn {
+        width: 100%;
     }
 
     .filters {

@@ -37,13 +37,23 @@ block principal
                 img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.title)
                 h2= item.title
                 p= item.overview
-                button(type="button", onclick=`event.stopPropagation(); removeMoviefromList('${item.id}')`) Remove from List
+                div(class="item-actions" onclick="event.stopPropagation()")
+                  div(class="star-rating" data-id=item.id)
+                    span.star-label Want to watch
+                    each s in [1, 2, 3, 4, 5]
+                      button(type="button", class=(item.wantStars || 0) >= s ? "star filled" : "star", onclick=`rateItem('${item.id}', ${s})`, aria-label=`${s} stars`)= "★"
+                  button(type="button", class="remove-btn", onclick=`removeMoviefromList('${item.id}')`) Remove
             else if item.type === "tv"
               div(class="tv" onclick=`window.location.href='/tv/${item.id}'`)
                 img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=item.name)
                 h2= item.name
                 p= item.overview
-                button(type="button", onclick=`event.stopPropagation(); removeMoviefromList('${item.id}')`) Remove from List
+                div(class="item-actions" onclick="event.stopPropagation()")
+                  div(class="star-rating" data-id=item.id)
+                    span.star-label Want to watch
+                    each s in [1, 2, 3, 4, 5]
+                      button(type="button", class=(item.wantStars || 0) >= s ? "star filled" : "star", onclick=`rateItem('${item.id}', ${s})`, aria-label=`${s} stars`)= "★"
+                  button(type="button", class="remove-btn", onclick=`removeMoviefromList('${item.id}')`) Remove
         button(type="button", class="add-items-btn", onclick="window.location.href='/search'") Add Items
 
       section(class="filters")
@@ -105,6 +115,25 @@ block principal
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: id, listId: currentListId })
+          });
+          const data = await response.json();
+          if (response.ok && data.success) {
+            window.location.reload();
+          } else {
+            alert("Error: " + data.message);
+          }
+        } catch (error) {
+          console.error("Network error:", error);
+          alert("Could not connect to the server.");
+        }
+      }
+
+      async function rateItem(id, stars) {
+        try {
+          const response = await fetch('/rateItem', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id, listId: currentListId, stars: stars })
           });
           const data = await response.json();
           if (response.ok && data.success) {

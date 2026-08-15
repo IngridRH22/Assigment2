@@ -71,8 +71,11 @@ const listSchema = new mongoose.Schema({
   // Compatibilidad con listas antiguas
   userids: { userid: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } },
   listName: { type: String, required: true },
-  items: [{ itemid: { type: String, required: true },
-            type: { type: String, required: true } }]
+  items: [{
+    itemid: { type: String, required: true },
+    type: { type: String, required: true },
+    wantStars: { type: Number, min: 0, max: 5, default: 0 }
+  }]
 });
 
 const User = mongoose.model("User", userSchema);
@@ -179,8 +182,14 @@ async function loadPrimaryData(userid, options = {}) {
   let items = [];
   let members = [];
   if (selectedList) {
-    items = await Promise.all(selectedList.items.map(item => idToItem(item.itemid, item.type)));
+    items = await Promise.all(selectedList.items.map(async (listItem) => {
+      const data = await idToItem(listItem.itemid, listItem.type);
+      if (!data) return null;
+      data.wantStars = listItem.wantStars || 0;
+      return data;
+    }));
     items = filterItems(items.filter(Boolean), mediaTypes, genreIds);
+    items.sort((a, b) => (b.wantStars || 0) - (a.wantStars || 0));
 
     const memberIds = new Set();
     if (selectedList.owner) memberIds.add(String(selectedList.owner));
@@ -230,13 +239,38 @@ app.post("/logout", function(req, res) {
 
 app.post("/signup", async function(req, res) {
     let errores = checkPassword(req.body.password, req.body.confirm_password,req);
+
+    const email = (req.body.email || "").trim().toLowerCase();
+    const username = (req.body.username || "").trim();
+
+    if (!email) {
+        errores.push("Email is required.");
+    }
+    if (!username) {
+        errores.push("Username is required.");
+    }
+
+    if (username) {
+        const existingUsername = await User.findOne({ username: { $regex: new RegExp("^" + username.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$", "i") } });
+        if (existingUsername) {
+            errores.push("That username is already taken.");
+        }
+    }
+
+    if (email) {
+        const existingEmail = await User.findOne({ email: { $regex: new RegExp("^" + email.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$", "i") } });
+        if (existingEmail) {
+            errores.push("That email is already registered.");
+        }
+    }
+
     if (errores.length > 0) {
         console.log(errores);
         res.render("signup", { errores: errores, email: req.body.email, username: req.body.username });
         return;
-    }else {
+    } else {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        let nuevo = await User.create({ email: req.body.email, username: req.body.username, password: hashedPassword });
+        let nuevo = await User.create({ email: email, username: username, password: hashedPassword });
         console.log(nuevo);
         req.session.userid = nuevo._id;
         await List.create({
@@ -452,6 +486,38 @@ app.post("/remMoviefromList", async function(req, res) {
     } catch (error) {
         console.error("Error removing from list:", error);
         res.status(500).json({ success: false, message: "Internal server error." });
+    }
+});
+
+app.post("/rateItem", async function(req, res) {
+    const { id, listId, stars } = req.body;
+    if (!req.session.userid) {
+        return res.status(401).json({ success: false, message: "You must be logged in." });
+    }
+
+    const rating = Number(stars);
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+        return res.status(400).json({ success: false, message: "Stars must be between 1 and 5." });
+    }
+
+    try {
+        const userList = await getListForUser(listId, req.session.userid);
+        if (!userList) {
+            return res.status(404).json({ success: false, message: "List not found." });
+        }
+
+        const listItem = userList.items.find(item => String(item.itemid) === String(id));
+        if (!listItem) {
+            return res.status(404).json({ success: false, message: "Item not found in your list." });
+        }
+
+        listItem.wantStars = rating;
+        await userList.save();
+
+        return res.status(200).json({ success: true, message: "Rating saved.", wantStars: rating });
+    } catch (error) {
+        console.error("Error rating item:", error);
+        return res.status(500).json({ success: false, message: "Internal server error." });
     }
 });
 

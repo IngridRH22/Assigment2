@@ -8,6 +8,15 @@ html(lang="en")
     link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin="anonymous")
     link(href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&family=Epilogue:wght@400;700&display=swap", rel="stylesheet")
     link(rel="stylesheet", href="/style.css")
+    script.
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
   body
     nav
       if userid
@@ -46,6 +55,7 @@ html(lang="en")
             path(d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7")
             path(d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6")
       section 
+        button#themeToggle.theme-toggle(type="button", aria-label="Toggle dark mode") Night
         if userid
           a(type="button", href="/account", class="account")
             svg.icon.icon-tabler.icons-tabler-outline.icon-tabler-user(
@@ -66,7 +76,23 @@ html(lang="en")
           a(type="button", href="/signup", class="SandL") Sign up
           a(type="button", href="/login", class="SandL") Login
 
-    block principal
+    main.page-content
+      block principal
 
     footer
       p &copy; 2026 Assignment 2.
+
+    script.
+      (function () {
+        var btn = document.getElementById('themeToggle');
+        function syncLabel() {
+          var dark = document.documentElement.classList.contains('dark');
+          btn.textContent = dark ? 'Day' : 'Night';
+        }
+        syncLabel();
+        btn.addEventListener('click', function () {
+          var dark = document.documentElement.classList.toggle('dark');
+          try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+          syncLabel();
+        });
+      })();

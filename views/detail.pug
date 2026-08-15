@@ -4,7 +4,7 @@ block principal
 
   section(class="detail-page")
     if item.poster_path || item.backdrop_path
-      div(class="detail-hero" style=`background-image: linear-gradient(120deg, rgba(36, 16, 55, 0.92), rgba(20, 61, 48, 0.85)), url(https://image.tmdb.org/t/p/w1280${item.backdrop_path || item.poster_path})`)
+      div(class="detail-hero" style=`background-image: url(https://image.tmdb.org/t/p/w1280${item.backdrop_path || item.poster_path})`)
         div(class="detail-content")
           if item.poster_path
             img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=(item.title || item.name), class="detail-poster")
