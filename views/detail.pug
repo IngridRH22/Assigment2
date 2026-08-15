@@ -1,0 +1,142 @@
+extends layout.pug
+
+block principal
+
+  section(class="detail-page")
+    if item.poster_path || item.backdrop_path
+      div(class="detail-hero" style=`background-image: linear-gradient(120deg, rgba(36, 16, 55, 0.92), rgba(20, 61, 48, 0.85)), url(https://image.tmdb.org/t/p/w1280${item.backdrop_path || item.poster_path})`)
+        div(class="detail-content")
+          if item.poster_path
+            img(src="https://image.tmdb.org/t/p/w500" + item.poster_path, alt=(item.title || item.name), class="detail-poster")
+          div(class="detail-info")
+            p.detail-kind= mediaKind === "movie" ? "Movie" : "TV Show"
+            h1= item.title || item.name
+            if item.tagline
+              p.detail-tagline= item.tagline
+            p.detail-meta
+              if item.release_date || item.first_air_date
+                span= (item.release_date || item.first_air_date || "").slice(0, 4)
+              if item.vote_average
+                span ★ #{Number(item.vote_average).toFixed(1)}
+              if item.runtime
+                span #{item.runtime} min
+              if item.number_of_seasons
+                span #{item.number_of_seasons} seasons
+            if item.genres && item.genres.length
+              div.detail-genres
+                each genre in item.genres
+                  span.genre-chip= genre.name
+            p.detail-overview= item.overview || "No overview available."
+            div.detail-actions
+              if userid
+                button(type="button", onclick=`openAddModal('${item.id}', '${mediaKind}')`) Add to List
+              a(href="javascript:history.back()", class="back-link") Back
+    else
+      div(class="detail-content plain")
+        h1= item.title || item.name
+        p.detail-overview= item.overview || "No overview available."
+        a(href="javascript:history.back()", class="back-link") Back
+
+  div#listModal.modal(hidden)
+    div.modal-backdrop(onclick="closeAddModal()")
+    div.modal-panel
+      h2 Add to list
+      p.modal-subtitle Choose an existing list or create a new one.
+      div#listOptions.list-options
+        p.loading-lists Loading lists...
+      div.create-list-box
+        label(for="newListName") Create new list
+        input#newListName(type="text", placeholder="List name")
+        button#confirmAddBtn(type="button") Confirm
+      button.modal-cancel(type="button", onclick="closeAddModal()") Cancel
+
+  if userid
+    script.
+      let pendingItem = null;
+      let selectedListId = null;
+
+      async function openAddModal(id, mediaType) {
+        pendingItem = { id, mediaType };
+        selectedListId = null;
+        document.getElementById('newListName').value = '';
+        document.getElementById('listModal').hidden = false;
+        const options = document.getElementById('listOptions');
+        options.innerHTML = '<p class="loading-lists">Loading lists...</p>';
+
+        try {
+          const response = await fetch('/api/lists');
+          const data = await response.json();
+          if (!response.ok || !data.success) {
+            options.innerHTML = '<p class="loading-lists">Could not load lists.</p>';
+            return;
+          }
+          if (!data.lists.length) {
+            options.innerHTML = '<p class="loading-lists">No lists yet. Create one below.</p>';
+            return;
+          }
+          options.innerHTML = data.lists.map(list =>
+            `<button type="button" class="list-option" data-id="${list._id}">${list.listName}</button>`
+          ).join('');
+          options.querySelectorAll('.list-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+              selectedListId = btn.dataset.id;
+              options.querySelectorAll('.list-option').forEach(b => b.classList.remove('selected'));
+              btn.classList.add('selected');
+              document.getElementById('newListName').value = '';
+            });
+          });
+        } catch (error) {
+          console.error(error);
+          options.innerHTML = '<p class="loading-lists">Could not load lists.</p>';
+        }
+      }
+
+      function closeAddModal() {
+        document.getElementById('listModal').hidden = true;
+        pendingItem = null;
+        selectedListId = null;
+      }
+
+      document.getElementById('confirmAddBtn').addEventListener('click', async function() {
+        if (!pendingItem) return;
+        const newListName = document.getElementById('newListName').value.trim();
+        if (!selectedListId && !newListName) {
+          alert('Select a list or enter a name for a new one.');
+          return;
+        }
+
+        const body = {
+          id: pendingItem.id,
+          mediaType: pendingItem.mediaType
+        };
+        if (newListName) {
+          body.newListName = newListName;
+        } else {
+          body.listId = selectedListId;
+        }
+
+        try {
+          const response = await fetch('/addMovieToList', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+          const data = await response.json();
+          if (response.ok && data.success) {
+            closeAddModal();
+            alert(data.message);
+          } else {
+            alert('Error: ' + data.message);
+          }
+        } catch (error) {
+          console.error('Network error:', error);
+          alert('Could not connect to the server.');
+        }
+      });
+
+      document.getElementById('newListName').addEventListener('input', function() {
+        if (this.value.trim()) {
+          selectedListId = null;
+          document.querySelectorAll('.list-option').forEach(b => b.classList.remove('selected'));
+        }
+      });
